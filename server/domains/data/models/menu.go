@@ -9,7 +9,8 @@ type Menu struct {
 	GroupMenuId uuid.UUID
 	GroupMenu   *GroupMenu `gorm:"foreignKey:GroupMenuId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
 	Title       string
-	Url         *string
+	Slug        string  `gorm:"uniqueIndex:Menu_unique_index"`
+	Url         *string `gorm:"uniqueIndex:Menu_unique_index"`
 	Icon        string
 	Desc        string
 	Position    int8
@@ -22,6 +23,7 @@ type MenuBuilder struct {
 	groupMenuId uuid.UUID
 	groupMenu   *GroupMenu
 	title       string
+	slug        string
 	url         *string
 	icon        string
 	desc        string
@@ -42,6 +44,7 @@ func (b *MenuBuilder) Build() *Menu {
 	o.GroupMenuId = b.groupMenuId
 	o.GroupMenu = b.groupMenu
 	o.Title = b.title
+	o.Slug = b.slug
 	o.Url = b.url
 	o.Icon = b.icon
 	o.Desc = b.desc
@@ -88,4 +91,9 @@ func (m *MenuBuilder) SetIsActive(isActive int8) {
 // Setter method for the field position of type int in the object MenuBuilder
 func (m *MenuBuilder) SetPosition(position int8) {
 	m.position = position
+}
+
+// Setter method for the field slug of type string in the object MenuBuilder
+func (m *MenuBuilder) SetSlug(slug string) {
+	m.slug = slug
 }

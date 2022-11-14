@@ -5,9 +5,10 @@ import "github.com/gofrs/uuid"
 type SubMenu struct {
 	BaseModel
 	MenuId   uuid.UUID
-	Menu     *Menu `gorm:"foreignKey:MenuId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
-	Title    string
-	Url      string
+	Menu     *Menu  `gorm:"foreignKey:MenuId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
+	Title    string `gorm:"uniqueIndex:SubMenu_unique_index"`
+	Slug     string `gorm:"uniqueIndex:SubMenu_unique_index"`
+	Url      string `gorm:"uniqueIndex:SubMenu_unique_index"`
 	Desc     string
 	Position int8
 	IsActive int8
@@ -19,6 +20,7 @@ type SubMenuBuilder struct {
 	menuId   uuid.UUID
 	menu     *Menu
 	title    string
+	slug     string
 	url      string
 	desc     string
 	position int8
@@ -38,6 +40,7 @@ func (b *SubMenuBuilder) Build() *SubMenu {
 	o.MenuId = b.menuId
 	o.Menu = b.menu
 	o.Title = b.title
+	o.Slug = b.slug
 	o.Url = b.url
 	o.Desc = b.desc
 	o.Position = b.position
@@ -78,4 +81,9 @@ func (s *SubMenuBuilder) SetPosition(position int8) {
 // Setter method for the field isActive of type int8 in the object SubMenuBuilder
 func (s *SubMenuBuilder) SetIsActive(isActive int8) {
 	s.isActive = isActive
+}
+
+// Setter method for the field slug of type string in the object SubMenuBuilder
+func (s *SubMenuBuilder) SetSlug(slug string) {
+	s.slug = slug
 }
