@@ -9,9 +9,10 @@ type Menu struct {
 	GroupMenuId uuid.UUID
 	GroupMenu   *GroupMenu `gorm:"foreignKey:GroupMenuId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
 	Title       string
-	Url         string
+	Url         *string
 	Icon        string
 	Desc        string
+	Position    int8
 	IsActive    int8
 }
 
@@ -21,9 +22,10 @@ type MenuBuilder struct {
 	groupMenuId uuid.UUID
 	groupMenu   *GroupMenu
 	title       string
-	url         string
+	url         *string
 	icon        string
 	desc        string
+	position    int8
 	isActive    int8
 }
 
@@ -43,6 +45,7 @@ func (b *MenuBuilder) Build() *Menu {
 	o.Url = b.url
 	o.Icon = b.icon
 	o.Desc = b.desc
+	o.Position = b.position
 	o.IsActive = b.isActive
 	return o
 }
@@ -63,7 +66,7 @@ func (m *MenuBuilder) SetTitle(title string) {
 }
 
 // Setter method for the field url of type string in the object MenuBuilder
-func (m *MenuBuilder) SetUrl(url string) {
+func (m *MenuBuilder) SetUrl(url *string) {
 	m.url = url
 }
 
@@ -80,4 +83,9 @@ func (m *MenuBuilder) SetDesc(desc string) {
 // Setter method for the field isActive of type int8 in the object MenuBuilder
 func (m *MenuBuilder) SetIsActive(isActive int8) {
 	m.isActive = isActive
+}
+
+// Setter method for the field position of type int in the object MenuBuilder
+func (m *MenuBuilder) SetPosition(position int8) {
+	m.position = position
 }
