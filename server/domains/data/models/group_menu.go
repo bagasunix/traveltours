@@ -4,6 +4,7 @@ type GroupMenu struct {
 	BaseModel
 	Name     string
 	Desc     string
+	Position int8
 	IsActive int8
 }
 
@@ -12,6 +13,7 @@ type GroupMenuBuilder struct {
 	BaseModelBuilder
 	name     string
 	desc     string
+	position int8
 	isActive int8
 }
 
@@ -26,6 +28,7 @@ func (b *GroupMenuBuilder) Build() *GroupMenu {
 	o := new(GroupMenu)
 	o.BaseModel = *b.BaseModelBuilder.Build()
 	o.Name = b.name
+	o.Position = b.position
 	o.Desc = b.desc
 	o.IsActive = b.isActive
 	return o
@@ -44,4 +47,9 @@ func (g *GroupMenuBuilder) SetDesc(desc string) {
 // Setter method for the field isActive of type int8 in the object GroupMenuBuilder
 func (g *GroupMenuBuilder) SetIsActive(isActive int8) {
 	g.isActive = isActive
+}
+
+// Setter method for the field position of type int in the object GroupMenuBuilder
+func (g *GroupMenuBuilder) SetPosition(position int8) {
+	g.position = position
 }
