@@ -4,7 +4,7 @@ type Permission struct {
 	BaseModel
 	Name   string
 	Slug   string
-	Method []string
+	Method string
 	Url    []string
 }
 
@@ -13,7 +13,7 @@ type PermissionBuilder struct {
 	BaseModelBuilder
 	name   string
 	slug   string
-	method []string
+	method string
 	url    []string
 }
 
@@ -34,18 +34,17 @@ func (b *PermissionBuilder) Build() *Permission {
 	return o
 }
 
-
 // Getter method for the field slug of type string in the object PermissionBuilder
-func (p *PermissionBuilder) Slug() string {		
+func (p *PermissionBuilder) Slug() string {
 	return p.slug
 }
 
 // Setter method for the field method of type []string in the object PermissionBuilder
-func (p *PermissionBuilder) SetMethod(method []string) {		
+func (p *PermissionBuilder) SetMethod(method string) {
 	p.method = method
 }
 
 // Setter method for the field url of type []string in the object PermissionBuilder
-func (p *PermissionBuilder) SetUrl(url []string) {		
+func (p *PermissionBuilder) SetUrl(url []string) {
 	p.url = url
 }
