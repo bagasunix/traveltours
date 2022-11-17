@@ -2,7 +2,7 @@ package models
 
 type Permission struct {
 	BaseModel
-	Name   string
+	Name   string `gorm:"size:50"`
 	Slug   string
 	Method string
 	Url    []string

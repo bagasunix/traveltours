@@ -2,10 +2,10 @@ package models
 
 type Role struct {
 	BaseModel
-	Name     string
+	Name     string `gorm:"size:50"`
 	TypeRole string
-	Desc     string
-	IsActive int8
+	Desc     string `gorm:"size:100"`
+	IsActive int8   `gorm:"size:1"`
 }
 
 // Builder Object for Role

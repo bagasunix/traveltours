@@ -9,7 +9,7 @@ type User struct {
 	RoleId     uuid.UUID
 	Role       *Role        `gorm:"foreignKey:RoleId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
 	Permission []Permission `gorm:"many2many:role_permissions;"`
-	IsActive   int8
+	IsActive   int8         `gorm:"size:1"`
 }
 
 // Builder Object for User

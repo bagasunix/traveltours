@@ -1,16 +1,22 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/gofrs/uuid"
+)
 
 type UserDetails struct {
 	BaseModel
 	IdentityNo    string
 	FullName      string
-	Sex           string
-	Religi        string
+	SexId         uuid.UUID
+	Sex           *UserSex `gorm:"foreignKey:SexId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
+	ReligiId      uuid.UUID
+	Religi        *UserReligi `gorm:"foreignKey:ReligiId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
 	DOB           time.Time
 	POB           string
-	WhatsApp      string
+	WhatsApp      string `gorm:"size:12"`
 	VillageId     *int64
 	Village       *Village `gorm:"foreignKey:VillageId"`
 	StreetAddress string   `gorm:"size:100"`
@@ -24,8 +30,10 @@ type UserDetailsBuilder struct {
 	BaseModelBuilder
 	identityNo    string
 	fullName      string
-	sex           string
-	religi        string
+	sexId         uuid.UUID
+	sex           *UserSex
+	religiId      uuid.UUID
+	religi        *UserReligi
 	dOB           time.Time
 	pOB           string
 	whatsApp      string
@@ -49,7 +57,9 @@ func (b *UserDetailsBuilder) Build() *UserDetails {
 	o.BaseModel = *b.BaseModelBuilder.Build()
 	o.IdentityNo = b.identityNo
 	o.FullName = b.fullName
+	o.SexId = b.sexId
 	o.Sex = b.sex
+	o.ReligiId = b.religiId
 	o.Religi = b.religi
 	o.DOB = b.dOB
 	o.POB = b.pOB
@@ -74,12 +84,12 @@ func (u *UserDetailsBuilder) SetFullName(fullName string) {
 }
 
 // Setter method for the field sex of type string in the object UserDetailsBuilder
-func (u *UserDetailsBuilder) SetSex(sex string) {
+func (u *UserDetailsBuilder) SetSex(sex *UserSex) {
 	u.sex = sex
 }
 
 // Setter method for the field religi of type string in the object UserDetailsBuilder
-func (u *UserDetailsBuilder) SetReligi(religi string) {
+func (u *UserDetailsBuilder) SetReligi(religi *UserReligi) {
 	u.religi = religi
 }
 
@@ -126,4 +136,14 @@ func (u *UserDetailsBuilder) SetLongitude(longitude float64) {
 // Setter method for the field postalCode of type string in the object UserDetailsBuilder
 func (u *UserDetailsBuilder) SetPostalCode(postalCode string) {
 	u.postalCode = postalCode
+}
+
+// Setter method for the field sexId of type uuid.UUID in the object UserDetailsBuilder
+func (u *UserDetailsBuilder) SetSexId(sexId uuid.UUID) {
+	u.sexId = sexId
+}
+
+// Setter method for the field religiId of type uuid.UUID in the object UserDetailsBuilder
+func (u *UserDetailsBuilder) SetReligiId(religiId uuid.UUID) {
+	u.religiId = religiId
 }

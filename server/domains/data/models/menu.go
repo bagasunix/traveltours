@@ -8,13 +8,13 @@ type Menu struct {
 	BaseModel
 	GroupMenuId uuid.UUID
 	GroupMenu   *GroupMenu `gorm:"foreignKey:GroupMenuId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
-	Title       string
+	Title       string `gorm:"size:50"`
 	Slug        string  `gorm:"uniqueIndex:Menu_unique_index"`
 	Url         *string `gorm:"uniqueIndex:Menu_unique_index"`
 	Icon        string
-	Desc        string
+	Desc        string `gorm:"size:100"`
 	Position    int8
-	IsActive    int8
+	IsActive    int8`gorm:"size:1"`
 }
 
 // Builder Object for Menu

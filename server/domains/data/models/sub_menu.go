@@ -9,9 +9,9 @@ type SubMenu struct {
 	Title    string `gorm:"uniqueIndex:SubMenu_unique_index"`
 	Slug     string `gorm:"uniqueIndex:SubMenu_unique_index"`
 	Url      string `gorm:"uniqueIndex:SubMenu_unique_index"`
-	Desc     string
+	Desc     string `gorm:"size:100"`
 	Position int8
-	IsActive int8
+	IsActive int8 `gorm:"size:1"`
 }
 
 // Builder Object for SubMenu

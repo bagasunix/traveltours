@@ -2,10 +2,10 @@ package models
 
 type GroupMenu struct {
 	BaseModel
-	Name     string
-	Desc     string
+	Name     string `gorm:"size:50"`
+	Desc     string `gorm:"size:100"`
 	Position int8
-	IsActive int8
+	IsActive int8 `gorm:"size:1"`
 }
 
 // Builder Object for GroupMenu
