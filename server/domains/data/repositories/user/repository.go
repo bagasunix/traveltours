@@ -17,6 +17,8 @@ type Commond interface {
 type Query interface {
 	GetByAll(ctx context.Context) (result models.SliceResult[models.User])
 	GetById(ctx context.Context, id uuid.UUID) (result models.SingleResult[*models.User])
+	GetByKeywordEmail(ctx context.Context, entity string) (result models.SliceResult[models.User])
+	UpdateByStatus(ctx context.Context, entity int8) error
 }
 
 type Repository interface {

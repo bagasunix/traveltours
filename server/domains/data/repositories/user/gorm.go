@@ -25,6 +25,18 @@ func (g *gormProvider) GetModelName() string {
 	return "User"
 }
 
+// GetByKeyword implements Repository
+func (g *gormProvider) GetByKeywordEmail(ctx context.Context, entity string) (result models.SliceResult[models.User]) {
+	entities := "%" + entity + "%"
+	result.Error = errors.ErrRecordNotFound(g.logger, g.GetModelName(), g.db.WithContext(ctx).Find(&result.Value, "email=?", entities).Error)
+	return result
+}
+
+// UpdateByStatus implements Repository
+func (g *gormProvider) UpdateByStatus(ctx context.Context, entity int8) error {
+	return errors.ErrSomethingWrong(g.logger, g.db.WithContext(ctx).Update("is_active=?", entity).Error)
+}
+
 // Create implements Repository
 func (g *gormProvider) Create(ctx context.Context, m *models.User) error {
 	return errors.ErrDuplicateValue(g.logger, g.GetModelName(), g.db.WithContext(ctx).Create(m).Error)
