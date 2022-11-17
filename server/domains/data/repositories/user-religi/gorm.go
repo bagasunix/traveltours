@@ -32,7 +32,7 @@ func (g *gormProvider) Create(ctx context.Context, m *models.UserReligi) error {
 
 // Delete implements Repository
 func (g *gormProvider) Delete(ctx context.Context, id uuid.UUID) error {
-	return errors.ErrSomethingWrong(g.logger, g.db.WithContext(ctx).Delete(models.NewAccessMenuBuilder().Build(), "id = ?", id.String()).Error)
+	return errors.ErrSomethingWrong(g.logger, g.db.WithContext(ctx).Delete(models.NewUserReligiBuilder().Build(), "id = ?", id.String()).Error)
 }
 
 // Update implements Repository
