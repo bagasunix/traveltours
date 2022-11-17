@@ -17,6 +17,7 @@ type Commond interface {
 type Query interface {
 	GetAll(ctx context.Context) (result models.SliceResult[models.Tour])
 	GetById(ctx context.Context, id uuid.UUID) (result models.SingleResult[*models.Tour])
+	GetByKeyword(ctx context.Context, entity string) (result models.SliceResult[models.Tour])
 }
 
 type Repository interface {

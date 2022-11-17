@@ -15,6 +15,13 @@ type gormProvider struct {
 	db     *gorm.DB
 }
 
+// GetByKeyword implements Repository
+func (g *gormProvider) GetByKeyword(ctx context.Context, entity string) (result models.SliceResult[models.Tour]) {
+	entities := "%" + entity + "%"
+	result.Error = errors.ErrRecordNotFound(g.logger, g.GetModelName(), g.db.WithContext(ctx).Find(&result.Value, "name=?", entities).Error)
+	return result
+}
+
 // GetConnection implements Repository
 func (g *gormProvider) GetConnection() (T any) {
 	return g.db
