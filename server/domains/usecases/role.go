@@ -7,8 +7,10 @@ import (
 	"github.com/bagasunix/traveltours/server/domains/data/models"
 	"github.com/bagasunix/traveltours/server/domains/data/repositories"
 	"github.com/bagasunix/traveltours/server/domains/entities"
+	"github.com/bagasunix/traveltours/server/domains/entities/mappers"
 	"github.com/bagasunix/traveltours/server/endpoints/requests"
 	"github.com/bagasunix/traveltours/server/endpoints/responses"
+	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/gofrs/uuid"
 	"go.uber.org/zap"
 )
@@ -63,7 +65,18 @@ func (r *role) DeleteRole(ctx context.Context, request *requests.EntityId) (resp
 
 // ListRole implements Role
 func (r *role) ListRole(ctx context.Context, request *requests.BaseList) (response *responses.ListEntity[entities.Role], err error) {
-	panic("unimplemented")
+	if request.Limit == 0 {
+		request.Limit = 25
+	}
+	resBuild := responses.NewListEntityBuilder[entities.Role]()
+	if validation.IsEmpty(request.Keyword) {
+		result := r.repo.GetRole().GetByAll(ctx, request.Limit)
+		resBuild.SetData(mappers.ListRoleModelToListEntity(result.Value))
+		return resBuild.Build(), result.Error
+	}
+	result := r.repo.GetRole().GetByKeywords(ctx, request.Keyword, request.Limit)
+	resBuild.SetData(mappers.ListRoleModelToListEntity(result.Value))
+	return resBuild.Build(), result.Error
 }
 
 // UpdateRole implements Role
