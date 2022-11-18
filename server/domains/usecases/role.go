@@ -3,6 +3,7 @@ package usecases
 import (
 	"context"
 
+	"github.com/bagasunix/traveltours/pkg/errors"
 	"github.com/bagasunix/traveltours/pkg/helpers"
 	"github.com/bagasunix/traveltours/server/domains/data/models"
 	"github.com/bagasunix/traveltours/server/domains/data/repositories"
@@ -20,11 +21,10 @@ type RoleWithEndpoint interface {
 	UpdateRole(ctx context.Context, request *requests.UpdateRole) (response *responses.Empty, err error)
 	DeleteRole(ctx context.Context, request *requests.EntityId) (response *responses.Empty, err error)
 	ListRole(ctx context.Context, request *requests.BaseList) (response *responses.ListEntity[entities.Role], err error)
-	ViewRole(ctx context.Context, request *requests.EntityId) (response *responses.ViewEntity[*entities.Role], err error)
 }
 
 type RoleWithNoEndpoint interface {
-	ViewRoleById(ctx context.Context, Id uuid.UUID) (role *entities.Role, err error)
+	ViewRoleById(ctx context.Context, id uuid.UUID) (response *responses.ViewEntity[*entities.Role], err error)
 	ViewRoleBySelectedId(ctx context.Context, ids []uuid.UUID) (roles []entities.Role, err error)
 }
 
@@ -84,14 +84,19 @@ func (r *role) UpdateRole(ctx context.Context, request *requests.UpdateRole) (re
 	panic("unimplemented")
 }
 
-// ViewRole implements Role
-func (r *role) ViewRole(ctx context.Context, request *requests.EntityId) (response *responses.ViewEntity[*entities.Role], err error) {
-	panic("unimplemented")
-}
-
 // ViewRoleById implements Role
-func (r *role) ViewRoleById(ctx context.Context, Id uuid.UUID) (role *entities.Role, err error) {
-	panic("unimplemented")
+func (r *role) ViewRoleById(ctx context.Context, id uuid.UUID) (response *responses.ViewEntity[*entities.Role], err error) {
+	if validation.IsEmpty(id) {
+		return nil, errors.ErrInvalidAttributes("role id")
+	}
+
+	roleResult := r.repo.GetRole().GetById(ctx, id)
+	if roleResult.Error != nil {
+		return nil, roleResult.Error
+	}
+
+	resBuilder := responses.NewViewEntityBuilder[*entities.Role]()
+	return resBuilder.SetData(mappers.RoleModelToEntity(roleResult.Value)).Build(), nil
 }
 
 // ViewRoleBySelectedId implements Role
