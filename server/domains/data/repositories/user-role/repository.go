@@ -15,8 +15,9 @@ type Commond interface {
 }
 
 type Query interface {
-	GetByAll(ctx context.Context) (result models.SliceResult[models.Role])
+	GetByAll(ctx context.Context, limit int64) (result models.SliceResult[models.Role])
 	GetById(ctx context.Context, id uuid.UUID) (result models.SingleResult[*models.Role])
+	GetByKeywords(ctx context.Context, entity string, limit int64) (result models.SliceResult[models.Role])
 }
 
 type Repository interface {

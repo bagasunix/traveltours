@@ -25,6 +25,13 @@ func (g *gormProvider) GetModelName() string {
 	return "User Role"
 }
 
+// GetByKeywords implements Repository
+func (g *gormProvider) GetByKeywords(ctx context.Context, entity string, limit int64) (result models.SliceResult[models.Role]) {
+	entities := "%" + entity + "%"
+	result.Error = errors.ErrRecordNotFound(g.logger, g.GetModelName(), g.db.WithContext(ctx).Limit(int(limit)).Find(&result.Value, "name=?", entities).Error)
+	return result
+}
+
 // Create implements Repository
 func (g *gormProvider) Create(ctx context.Context, m *models.Role) error {
 	return errors.ErrDuplicateValue(g.logger, g.GetModelName(), g.db.WithContext(ctx).Create(m).Error)
@@ -41,7 +48,7 @@ func (g *gormProvider) Update(ctx context.Context, m models.Role) error {
 }
 
 // GetByAll implements Repository
-func (g *gormProvider) GetByAll(ctx context.Context) (result models.SliceResult[models.Role]) {
+func (g *gormProvider) GetByAll(ctx context.Context, limit int64) (result models.SliceResult[models.Role]) {
 	result.Error = errors.ErrRecordNotFound(g.logger, g.GetModelName(), g.db.WithContext(ctx).Find(&result.Value).Error)
 	return result
 }
