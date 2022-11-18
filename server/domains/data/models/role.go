@@ -3,7 +3,7 @@ package models
 type Role struct {
 	BaseModel
 	Name     string `gorm:"size:50"`
-	TypeRole string
+	Group    string `gorm:"size:100;index:role_group"`
 	Desc     string `gorm:"size:100"`
 	IsActive int8   `gorm:"size:1"`
 }
@@ -12,7 +12,7 @@ type Role struct {
 type RoleBuilder struct {
 	BaseModelBuilder
 	name     string
-	typeRole string
+	group    string
 	desc     string
 	isActive int8
 }
@@ -28,7 +28,7 @@ func (b *RoleBuilder) Build() *Role {
 	o := new(Role)
 	o.BaseModel = *b.BaseModelBuilder.Build()
 	o.Name = b.name
-	o.TypeRole = b.typeRole
+	o.Group = b.group
 	o.Desc = b.desc
 	o.IsActive = b.isActive
 	return o
@@ -40,8 +40,8 @@ func (r *RoleBuilder) SetName(name string) {
 }
 
 // Setter method for the field typeRole of type string in the object RoleBuilder
-func (r *RoleBuilder) SetTypeRole(typeRole string) {
-	r.typeRole = typeRole
+func (r *RoleBuilder) SetGroup(group string) {
+	r.group = group
 }
 
 // Setter method for the field desc of type string in the object RoleBuilder
