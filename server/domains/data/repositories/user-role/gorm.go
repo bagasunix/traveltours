@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/bagasunix/traveltours/pkg/errors"
+	"github.com/bagasunix/traveltours/pkg/helpers"
 	"github.com/bagasunix/traveltours/server/domains/data/models"
 	"github.com/gofrs/uuid"
 	"go.uber.org/zap"
@@ -13,6 +14,19 @@ import (
 type gormProvider struct {
 	logger *zap.Logger
 	db     *gorm.DB
+}
+
+// GetByGroup implements Repository
+func (g *gormProvider) GetByGroup(ctx context.Context, group string) (result models.SliceResult[models.Role]) {
+	result.Error = errors.ErrRecordNotFound(g.logger, g.GetModelName(), g.db.WithContext(ctx).Where("group = ?", group).Find(&result.Value).Error)
+	return result
+}
+
+// GetBySelectedId implements Repository
+func (g *gormProvider) GetBySelectedId(ctx context.Context, ids []uuid.UUID) (result models.SliceResult[models.Role]) {
+	rids := helpers.ListUUIDToListString(ids)
+	result.Error = errors.ErrRecordNotFound(g.logger, g.GetModelName(), g.db.WithContext(ctx).Where("id in ?", rids).Find(&result.Value).Error)
+	return result
 }
 
 // GetConnection implements Repository
