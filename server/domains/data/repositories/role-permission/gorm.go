@@ -16,6 +16,41 @@ type gormProvider struct {
 	db     *gorm.DB
 }
 
+// CreateBatch implements Repository
+func (g *gormProvider) CreateBatch(ctx context.Context, models []models.RolePermission) error {
+	for _, v := range models {
+		if err := g.Create(ctx, &v); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// CreateTx implements Repository
+func (g *gormProvider) CreateTx(ctx context.Context, tx any, model *models.RolePermission) error {
+	return errors.ErrDuplicateValue(g.logger, g.GetModelName(), tx.(*gorm.DB).WithContext(ctx).Create(tx).Error)
+}
+
+// CreateTxBatch implements Repository
+func (g *gormProvider) CreateTxBatch(ctx context.Context, tx any, models []models.RolePermission) error {
+	for _, v := range models {
+		if err := g.CreateTx(ctx, tx, &v); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// DeleteBatch implements Repository
+func (g *gormProvider) DeleteBatch(ctx context.Context, roleId uuid.UUID, permissionIds []uuid.UUID) error {
+	for _, v := range permissionIds {
+		if err := g.Delete(ctx, roleId, v); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // GetById implements Repository
 func (g *gormProvider) GetById(ctx context.Context, id uuid.UUID) (result models.SliceResult[models.RolePermission]) {
 	result.Error = errors.ErrRecordNotFound(g.logger, g.GetModelName(), g.db.WithContext(ctx).First(&result.Value, "id=?", id.String()).Error)
@@ -51,14 +86,15 @@ func (g *gormProvider) Create(ctx context.Context, m *models.RolePermission) err
 }
 
 // Delete implements Repository
-func (g *gormProvider) Delete(ctx context.Context, id uuid.UUID) error {
+func (g *gormProvider) Delete(ctx context.Context, roleId uuid.UUID, permissionId uuid.UUID) error {
 	return errors.ErrSomethingWrong(g.logger,
-		g.db.WithContext(ctx).Delete(models.NewRolePermissionBuilder().Build(), "id = ?", id.String()).Error)
+		g.db.WithContext(ctx).Delete(models.NewRolePermissionBuilder().Build(),
+			"role_id = ? and permission_id = ?", roleId.String(), permissionId.String()).Error)
 }
 
 // Update implements Repository
 func (g *gormProvider) Update(ctx context.Context, m *models.RolePermission) error {
-	panic("unimplemented")
+	return errors.ErrSomethingWrong(g.logger, g.db.WithContext(ctx).Updates(m).Error)
 }
 
 func NewGorm(logger *zap.Logger, db *gorm.DB) Repository {

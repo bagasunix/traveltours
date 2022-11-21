@@ -10,8 +10,12 @@ import (
 
 type Command interface {
 	Create(ctx context.Context, m *models.RolePermission) error
+	CreateTx(ctx context.Context, tx any, model *models.RolePermission) error
+	CreateTxBatch(ctx context.Context, tx any, models []models.RolePermission) error
+	CreateBatch(ctx context.Context, models []models.RolePermission) error
 	Update(ctx context.Context, m *models.RolePermission) error
-	Delete(ctx context.Context, id uuid.UUID) error
+	Delete(ctx context.Context, roleId uuid.UUID, permissionId uuid.UUID) error
+	DeleteBatch(ctx context.Context, roleId uuid.UUID, permissionIds []uuid.UUID) error
 }
 
 type Query interface {
