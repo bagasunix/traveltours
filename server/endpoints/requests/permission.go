@@ -9,7 +9,6 @@ import (
 
 type CreatePermission struct {
 	Name   string   `json:"name"`
-	Slug   string   `json:"slug"`
 	Method string   `json:"method"`
 	Url    []string `json:"url"`
 }
@@ -17,9 +16,6 @@ type CreatePermission struct {
 func (s *CreatePermission) Validate() error {
 	if validation.IsEmpty(s.Name) {
 		return errors.ErrInvalidAttributes("permission name")
-	}
-	if validation.IsEmpty(s.Slug) {
-		return errors.ErrInvalidAttributes("permission slug")
 	}
 	if validation.IsEmpty(s.Method) {
 		return errors.ErrInvalidAttributes("permission method")
@@ -39,7 +35,6 @@ func (s *CreatePermission) ToJSON() []byte {
 // Builder Object for CreatePermission
 type CreatePermissionBuilder struct {
 	name   string
-	slug   string
 	method string
 	url    []string
 }
@@ -54,7 +49,6 @@ func NewCreatePermissionBuilder() *CreatePermissionBuilder {
 func (b *CreatePermissionBuilder) Build() *CreatePermission {
 	o := new(CreatePermission)
 	o.Name = b.name
-	o.Slug = b.slug
 	o.Method = b.method
 	o.Url = b.url
 	return o
@@ -63,11 +57,6 @@ func (b *CreatePermissionBuilder) Build() *CreatePermission {
 // Setter method for the field name of type string in the object CreatePermissionBuilder
 func (c *CreatePermissionBuilder) SetName(name string) {
 	c.name = name
-}
-
-// Setter method for the field slug of type string in the object CreatePermissionBuilder
-func (c *CreatePermissionBuilder) SetSlug(slug string) {
-	c.slug = slug
 }
 
 // Setter method for the field method of type string in the object CreatePermissionBuilder
@@ -81,8 +70,8 @@ func (c *CreatePermissionBuilder) SetUrl(url []string) {
 }
 
 type UpdatePermission struct {
+	EntityId
 	Name   string   `json:"name"`
-	Slug   string   `json:"slug"`
 	Method string   `json:"method"`
 	Url    []string `json:"url"`
 }
@@ -90,9 +79,6 @@ type UpdatePermission struct {
 func (s *UpdatePermission) Validate() error {
 	if validation.IsEmpty(s.Name) {
 		return errors.ErrInvalidAttributes("permission name")
-	}
-	if validation.IsEmpty(s.Slug) {
-		return errors.ErrInvalidAttributes("permission slug")
 	}
 	if validation.IsEmpty(s.Method) {
 		return errors.ErrInvalidAttributes("permission method")
@@ -112,7 +98,6 @@ func (s *UpdatePermission) ToJSON() []byte {
 // Builder Object for UpdatePermission
 type UpdatePermissionBuilder struct {
 	name   string
-	slug   string
 	method string
 	url    []string
 }
@@ -127,7 +112,6 @@ func NewUpdatePermissionBuilder() *UpdatePermissionBuilder {
 func (b *UpdatePermissionBuilder) Build() *UpdatePermission {
 	o := new(UpdatePermission)
 	o.Name = b.name
-	o.Slug = b.slug
 	o.Method = b.method
 	o.Url = b.url
 	return o
@@ -136,11 +120,6 @@ func (b *UpdatePermissionBuilder) Build() *UpdatePermission {
 // Setter method for the field name of type string in the object UpdatePermissionBuilder
 func (u *UpdatePermissionBuilder) SetName(name string) {
 	u.name = name
-}
-
-// Setter method for the field slug of type string in the object UpdatePermissionBuilder
-func (u *UpdatePermissionBuilder) SetSlug(slug string) {
-	u.slug = slug
 }
 
 // Setter method for the field method of type string in the object UpdatePermissionBuilder
