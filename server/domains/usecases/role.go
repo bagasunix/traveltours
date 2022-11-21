@@ -21,6 +21,8 @@ type RoleWithEndpoint interface {
 	UpdateRole(ctx context.Context, request *requests.UpdateRole) (response *responses.Empty, err error)
 	DeleteRole(ctx context.Context, request *requests.EntityId) (response *responses.Empty, err error)
 	ListRole(ctx context.Context, request *requests.BaseList) (response *responses.ListEntity[entities.Role], err error)
+	AssignPermissionsToRole(ctx context.Context, request *requests.AssignPermissionsToRole) (response *responses.Empty, err error)
+	RemovePermissionsFromRole(ctx context.Context, request *requests.RemovePermissionsFromRole) (response *responses.Empty, err error)
 }
 
 type RoleWithNoEndpoint interface {
@@ -35,6 +37,34 @@ type Role interface {
 type role struct {
 	repo   repositories.Repositories
 	logger *zap.Logger
+}
+
+// AssignPermissionsToRole implements Role
+func (r *role) AssignPermissionsToRole(ctx context.Context, request *requests.AssignPermissionsToRole) (response *responses.Empty, err error) {
+	rolePermissionModelBuilder := models.NewRolePermissionBuilder()
+	var rolePermissionModels []models.RolePermission
+	for _, v := range request.PermissionIds {
+		rolePermissionModelBuilder.SetRoleId(request.RoleId.(uuid.UUID))
+		rolePermissionModelBuilder.SetPermissionId(v.(uuid.UUID))
+		rolePermissionModels = append(rolePermissionModels, *rolePermissionModelBuilder.Build())
+	}
+
+	if err = r.repo.GetRolePermission().CreateBatch(ctx, rolePermissionModels); err != nil {
+		return nil, err
+	}
+	return new(responses.Empty), nil
+}
+
+// RemovePermissionsFromRole implements Role
+func (r *role) RemovePermissionsFromRole(ctx context.Context, request *requests.RemovePermissionsFromRole) (response *responses.Empty, err error) {
+	var ids []uuid.UUID
+	for _, i := range request.PermissionIds {
+		ids = append(ids, i.(uuid.UUID))
+	}
+	if err = r.repo.GetRolePermission().DeleteBatch(ctx, request.RoleId.(uuid.UUID), ids); err != nil {
+		return nil, err
+	}
+	return new(responses.Empty), nil
 }
 
 // CreateRole implements Role
