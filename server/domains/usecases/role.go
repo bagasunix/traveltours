@@ -25,7 +25,6 @@ type RoleWithEndpoint interface {
 
 type RoleWithNoEndpoint interface {
 	ViewRoleById(ctx context.Context, id uuid.UUID) (response *responses.ViewEntity[*entities.Role], err error)
-	ViewRoleBySelectedId(ctx context.Context, ids []uuid.UUID) (roles []entities.Role, err error)
 }
 
 type Role interface {
@@ -60,7 +59,10 @@ func (r *role) CreateRole(ctx context.Context, request *requests.CreateRole) (re
 
 // DeleteRole implements Role
 func (r *role) DeleteRole(ctx context.Context, request *requests.EntityId) (response *responses.Empty, err error) {
-	panic("unimplemented")
+	if err := request.Validate(); err != nil {
+		return nil, err
+	}
+	return new(responses.Empty), r.repo.GetRole().Delete(ctx, request.Id.(uuid.UUID))
 }
 
 // ListRole implements Role
@@ -81,7 +83,18 @@ func (r *role) ListRole(ctx context.Context, request *requests.BaseList) (respon
 
 // UpdateRole implements Role
 func (r *role) UpdateRole(ctx context.Context, request *requests.UpdateRole) (response *responses.Empty, err error) {
-	panic("unimplemented")
+	if err = request.Validate(); err != nil {
+		return nil, err
+	}
+
+	mRole := models.NewRoleBuilder()
+	mRole.SetId(request.Id.(uuid.UUID))
+	mRole.SetName(request.Name)
+	mRole.SetGroup(request.Group)
+	mRole.SetDesc(request.Desc)
+	mRole.SetIsActive(request.IsActive)
+
+	return new(responses.Empty), r.repo.GetRole().Update(ctx, *mRole.Build())
 }
 
 // ViewRoleById implements Role
@@ -97,11 +110,6 @@ func (r *role) ViewRoleById(ctx context.Context, id uuid.UUID) (response *respon
 
 	resBuilder := responses.NewViewEntityBuilder[*entities.Role]()
 	return resBuilder.SetData(mappers.RoleModelToEntity(roleResult.Value)).Build(), nil
-}
-
-// ViewRoleBySelectedId implements Role
-func (r *role) ViewRoleBySelectedId(ctx context.Context, ids []uuid.UUID) (roles []entities.Role, err error) {
-	panic("unimplemented")
 }
 
 func NewRole(logger *zap.Logger, repo repositories.Repositories) Role {
