@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"github.com/bagasunix/traveltours/server/domains/data/repositories/permission"
+	rolepermission "github.com/bagasunix/traveltours/server/domains/data/repositories/role-permission"
 	"github.com/bagasunix/traveltours/server/domains/data/repositories/tour"
 	tourreview "github.com/bagasunix/traveltours/server/domains/data/repositories/tour-review"
 	"github.com/bagasunix/traveltours/server/domains/data/repositories/user"
@@ -22,17 +24,31 @@ type Repositories interface {
 	GetUserSex() usersex.Repository
 	GetRole() userrole.Repository
 	GetVillage() village.Repository
+	GetRolePermission() rolepermission.Repository
+	GetPermission() permission.Repository
 }
 
 type repo struct {
-	tour       tour.Repository
-	tourReview tourreview.Repository
-	user       user.Repository
-	userDetail userdetails.Repository
-	userReligi userreligi.Repository
-	userSex    usersex.Repository
-	role       userrole.Repository
-	village    village.Repository
+	tour           tour.Repository
+	tourReview     tourreview.Repository
+	user           user.Repository
+	userDetail     userdetails.Repository
+	userReligi     userreligi.Repository
+	userSex        usersex.Repository
+	role           userrole.Repository
+	village        village.Repository
+	rolepermission rolepermission.Repository
+	permission     permission.Repository
+}
+
+// GetPermission implements Repositories
+func (r *repo) GetPermission() permission.Repository {
+	return r.permission
+}
+
+// GetRolePermission implements Repositories
+func (r *repo) GetRolePermission() rolepermission.Repository {
+	return r.rolepermission
 }
 
 // GetRole implements Repositories
@@ -85,5 +101,7 @@ func New(logger *zap.Logger, db *gorm.DB) Repositories {
 	rp.userSex = usersex.NewGorm(logger, db)
 	rp.role = userrole.NewGorm(logger, db)
 	rp.village = village.NewGorm(logger, db)
+	rp.rolepermission = rolepermission.NewGorm(logger, db)
+	rp.permission = permission.NewGorm(logger, db)
 	return rp
 }
