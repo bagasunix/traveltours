@@ -3,6 +3,7 @@ package mappers
 import (
 	"github.com/bagasunix/traveltours/server/domains/data/models"
 	"github.com/bagasunix/traveltours/server/domains/entities"
+	"github.com/gofrs/uuid"
 )
 
 func RoleModelToEntity(model *models.Role) *entities.Role {
@@ -22,4 +23,15 @@ func ListRoleModelToListEntity(models []models.Role) (entities []entities.Role) 
 		entities = append(entities, *RoleModelToEntity(&m))
 	}
 	return entities
+}
+
+func RoleIdFromRole(user *entities.Role) (id any) {
+	return user.Id
+}
+
+func ListRoleIdFromListRole(roles []entities.Role) (ids []uuid.UUID) {
+	for _, i := range roles {
+		ids = append(ids, RoleIdFromRole(&i).(uuid.UUID))
+	}
+	return ids
 }
