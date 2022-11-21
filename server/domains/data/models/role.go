@@ -2,19 +2,21 @@ package models
 
 type Role struct {
 	BaseModel
-	Name     string `gorm:"size:50"`
-	Group    string `gorm:"size:100;index:role_group"`
-	Desc     string `gorm:"size:100"`
-	IsActive int8   `gorm:"size:1"`
+	Name        string       `gorm:"size:50"`
+	Group       string       `gorm:"size:100;index:role_group"`
+	Permissions []Permission `gorm:"many2many:role_permissions;"`
+	Desc        string       `gorm:"size:100"`
+	IsActive    int8         `gorm:"size:1"`
 }
 
 // Builder Object for Role
 type RoleBuilder struct {
 	BaseModelBuilder
-	name     string
-	group    string
-	desc     string
-	isActive int8
+	name        string
+	group       string
+	permissions []Permission
+	desc        string
+	isActive    int8
 }
 
 // Constructor for RoleBuilder
@@ -29,6 +31,7 @@ func (b *RoleBuilder) Build() *Role {
 	o.BaseModel = *b.BaseModelBuilder.Build()
 	o.Name = b.name
 	o.Group = b.group
+	o.Permissions = b.permissions
 	o.Desc = b.desc
 	o.IsActive = b.isActive
 	return o
@@ -52,4 +55,10 @@ func (r *RoleBuilder) SetDesc(desc string) {
 // Setter method for the field isActive of type int8 in the object RoleBuilder
 func (r *RoleBuilder) SetIsActive(isActive int8) {
 	r.isActive = isActive
+}
+
+
+// Setter method for the field permissions of type []Permission in the object RoleBuilder
+func (r *RoleBuilder) SetPermissions(permissions []Permission) {		
+	r.permissions = permissions
 }
