@@ -3,16 +3,17 @@ package entities
 type Permission struct {
 	Entity
 	Name   string `json:"name"`
-	Slug string
+	Slug   string `json:"slug"`
 	Method string `json:"method"`
-	Uri    string `json:"uri"`
+	Url    string `json:"uri"`
 }
 
 // PermissionBuilder Builder Object for Permission
 type PermissionBuilder struct {
 	EntityBuilder
 	name   string
-	uri    string
+	slug   string
+	url    string
 	method string
 }
 
@@ -27,8 +28,9 @@ func (p *PermissionBuilder) Build() *Permission {
 	o := new(Permission)
 	o.Entity = *p.EntityBuilder.Build()
 	o.Name = p.name
+	o.Slug = p.slug
 	o.Method = p.method
-	o.Uri = p.uri
+	o.Url = p.url
 	return o
 }
 
@@ -39,8 +41,8 @@ func (p *PermissionBuilder) SetName(name string) *PermissionBuilder {
 }
 
 // SetUri Setter method for the field uri of type string in the object PermissionBuilder
-func (p *PermissionBuilder) SetUri(uri string) *PermissionBuilder {
-	p.uri = uri
+func (p *PermissionBuilder) SetUrl(url string) *PermissionBuilder {
+	p.url = url
 	return p
 }
 
@@ -48,4 +50,9 @@ func (p *PermissionBuilder) SetUri(uri string) *PermissionBuilder {
 func (p *PermissionBuilder) SetMethod(method string) *PermissionBuilder {
 	p.method = method
 	return p
+}
+
+// Setter method for the field slug of type string in the object PermissionBuilder
+func (p *PermissionBuilder) SetSlug(slug string) {
+	p.slug = slug
 }
