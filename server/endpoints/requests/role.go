@@ -152,59 +152,6 @@ func (u *UpdateRoleBuilder) SetIsActive(isActive int8) {
 	u.isActive = isActive
 }
 
-type AssignPermissionsToRole struct {
-	RoleId        any   `json:"roleId"`
-	PermissionIds []any `json:"permissionIds"`
-}
-
-func (a *AssignPermissionsToRole) ToJSON() []byte {
-	j, err := json.Marshal(a)
-	errors.HandlerReturnedVoid(err)
-	return j
-}
-
-func (a *AssignPermissionsToRole) Validate() error {
-	if validation.IsEmpty(a.RoleId) {
-		return errors.ErrInvalidAttributes("role id")
-	}
-	if validation.IsEmpty(a.PermissionIds) {
-		return errors.ErrInvalidAttributes("permission ids")
-	}
-	return nil
-}
-
-// AssignPermissionsToRoleBuilder Builder Object for AssignPermissionsToRole
-type AssignPermissionsToRoleBuilder struct {
-	roleId        any
-	permissionIds []any
-}
-
-// NewAssignPermissionsBuilder NewAssignPermissionBuilder Constructor for AssignPermissionsToRoleBuilder
-func NewAssignPermissionsBuilder() *AssignPermissionsToRoleBuilder {
-	o := new(AssignPermissionsToRoleBuilder)
-	return o
-}
-
-// Build Method which creates AssignPermissionsToRole
-func (b *AssignPermissionsToRoleBuilder) Build() *AssignPermissionsToRole {
-	o := new(AssignPermissionsToRole)
-	o.RoleId = b.roleId
-	o.PermissionIds = b.permissionIds
-	return o
-}
-
-// RoleId Builder method to set the field roleId in AssignPermissionsToRoleBuilder
-func (b *AssignPermissionsToRoleBuilder) RoleId(v any) *AssignPermissionsToRoleBuilder {
-	b.roleId = v
-	return b
-}
-
-// PermissionId Builder method to set the field permissionId in AssignPermissionsToRoleBuilder
-func (b *AssignPermissionsToRoleBuilder) PermissionId(v []any) *AssignPermissionsToRoleBuilder {
-	b.permissionIds = v
-	return b
-}
-
 type RemovePermissionsFromRole struct {
 	RoleId        any   `json:"roleId"`
 	PermissionIds []any `json:"permissionId"`
