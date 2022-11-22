@@ -3,6 +3,9 @@ package usecases
 import (
 	"context"
 
+	"github.com/bagasunix/traveltours/pkg/errors"
+	"github.com/bagasunix/traveltours/pkg/helpers"
+	"github.com/bagasunix/traveltours/server/domains/data/models"
 	"github.com/bagasunix/traveltours/server/domains/data/repositories"
 	"github.com/bagasunix/traveltours/server/domains/entities"
 	"github.com/bagasunix/traveltours/server/endpoints/requests"
@@ -36,42 +39,63 @@ type user struct {
 }
 
 // CreateUser implements User
-func (*user) CreateUser(ctx context.Context, request *requests.CreateUser) (response *responses.EntityId, err error) {
-	panic("unimplemented")
+func (u *user) CreateUser(ctx context.Context, request *requests.CreateUser) (response *responses.EntityId, err error) {
+	resBuilder := responses.NewEntityIdBuilder()
+
+	if err = request.Validate(); err != nil {
+		return resBuilder.Build(), err
+	}
+
+	if helpers.IsEmailValid(request.Email) != true {
+		return nil, errors.ErrValidEmail(u.logger, request.Email)
+	}
+
+	mUser := models.NewUserBuilder()
+	mUser.SetId(helpers.GenerateUUIDV1(u.logger))
+	mUser.SetEmail(request.Email)
+	mUser.SetPassword(helpers.HashAndSalt([]byte(request.Password)))
+	mUser.SetRoleId(request.RoleId)
+	mUser.SetIsActive(2)
+
+	if err = u.repo.GetUser().Create(ctx, mUser.Build()); err != nil {
+		return resBuilder.Build(), err
+	}
+
+	return resBuilder.SetId(mUser.Build().Id).Build(), nil
 }
 
 // DeleteUser implements User
-func (*user) DeleteUser(ctx context.Context, request *requests.EntityId) (response *responses.Empty, err error) {
+func (u *user) DeleteUser(ctx context.Context, request *requests.EntityId) (response *responses.Empty, err error) {
 	panic("unimplemented")
 }
 
 // DisableAccount implements User
-func (*user) DisableAccount(ctx context.Context, req *requests.DisableAccount) (res *responses.Empty, err error) {
+func (u *user) DisableAccount(ctx context.Context, req *requests.DisableAccount) (res *responses.Empty, err error) {
 	panic("unimplemented")
 }
 
 // ListUser implements User
-func (*user) ListUser(ctx context.Context, request *requests.BaseList) (response *responses.ListEntity[entities.User], err error) {
+func (u *user) ListUser(ctx context.Context, request *requests.BaseList) (response *responses.ListEntity[entities.User], err error) {
 	panic("unimplemented")
 }
 
 // ViewUser implements User
-func (*user) ViewUser(ctx context.Context, request *requests.EntityId) (response *responses.ViewEntity[*entities.User], err error) {
+func (u *user) ViewUser(ctx context.Context, request *requests.EntityId) (response *responses.ViewEntity[*entities.User], err error) {
 	panic("unimplemented")
 }
 
 // ListUserByLimit implements User
-func (*user) ListUserByLimit(ctx context.Context, limit int64) (users []entities.User, err error) {
+func (u *user) ListUserByLimit(ctx context.Context, limit int64) (users []entities.User, err error) {
 	panic("unimplemented")
 }
 
 // ViewUserByEmail implements User
-func (*user) ViewUserByEmail(ctx context.Context, emailOrMsisdn string) (user *entities.User, err error) {
+func (u *user) ViewUserByEmail(ctx context.Context, emailOrMsisdn string) (user *entities.User, err error) {
 	panic("unimplemented")
 }
 
 // ViewUserById implements User
-func (*user) ViewUserById(ctx context.Context, id uuid.UUID) (user *entities.User, err error) {
+func (u *user) ViewUserById(ctx context.Context, id uuid.UUID) (user *entities.User, err error) {
 	panic("unimplemented")
 }
 
