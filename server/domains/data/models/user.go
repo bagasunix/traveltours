@@ -9,7 +9,7 @@ type User struct {
 	RoleId     uuid.UUID
 	Role       *Role        `gorm:"foreignKey:RoleId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
 	Permission []Permission `gorm:"many2many:role_permissions;"`
-	IsActive   int8         `gorm:"size:1"`
+	IsActive   string       `gorm:"size:1"`
 }
 
 // Builder Object for User
@@ -20,7 +20,7 @@ type UserBuilder struct {
 	roleId     uuid.UUID
 	role       *Role
 	permission []Permission
-	isActive   int8
+	isActive   string
 }
 
 // Constructor for UserBuilder
@@ -67,7 +67,7 @@ func (u *UserBuilder) SetPermission(permission []Permission) {
 	u.permission = permission
 }
 
-// Setter method for the field isActive of type int8 in the object UserBuilder
-func (u *UserBuilder) SetIsActive(isActive int8) {
+// Setter method for the field isActive of type string in the object UserBuilder
+func (u *UserBuilder) SetIsActive(isActive string) {
 	u.isActive = isActive
 }
