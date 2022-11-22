@@ -3,8 +3,8 @@ package entities
 type User struct {
 	Entity
 	Email    string
-	Role     *Role `json:"role,omitempty"`
-	IsActive int8  `json:"is_active"`
+	Role     *Role  `json:"role,omitempty"`
+	IsActive string `json:"is_active"`
 }
 
 // Builder Object for User
@@ -12,7 +12,7 @@ type UserBuilder struct {
 	EntityBuilder
 	email    string
 	role     *Role
-	isActive int8
+	isActive string
 }
 
 // Constructor for UserBuilder
@@ -40,7 +40,7 @@ func (u *UserBuilder) SetRole(role *Role) {
 	u.role = role
 }
 
-// Setter method for the field isActive of type int8 in the object UserBuilder
-func (u *UserBuilder) SetIsActive(isActive int8) {
+// Setter method for the field isActive of type string in the object UserBuilder
+func (u *UserBuilder) SetIsActive(isActive string) {
 	u.isActive = isActive
 }
