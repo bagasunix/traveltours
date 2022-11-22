@@ -55,7 +55,7 @@ func (u *user) CreateUser(ctx context.Context, request *requests.CreateUser) (re
 	mUser.SetEmail(request.Email)
 	mUser.SetPassword(helpers.HashAndSalt([]byte(request.Password)))
 	mUser.SetRoleId(request.RoleId)
-	mUser.SetIsActive(2)
+	mUser.SetIsActive("0")
 
 	if err = u.repo.GetUser().Create(ctx, mUser.Build()); err != nil {
 		return resBuilder.Build(), err
