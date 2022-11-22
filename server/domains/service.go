@@ -2,13 +2,18 @@ package domains
 
 import (
 	"github.com/bagasunix/traveltours/server/domains/data/repositories"
+	"github.com/bagasunix/traveltours/server/domains/usecases"
 	"go.uber.org/zap"
 )
 
 type Service interface {
+	usecases.Role
+	usecases.Permission
 }
 
 type service struct {
+	usecases.Role
+	usecases.Permission
 }
 
 type ServiceBuild struct {
@@ -26,6 +31,8 @@ func NewServiceBuild(logger *zap.Logger, repo repositories.Repositories) *Servic
 
 func buildService(logger *zap.Logger, repo repositories.Repositories) Service {
 	svc := new(service)
+	svc.Permission = usecases.NewPermission(logger, repo)
+	svc.Role = usecases.NewRole(logger, repo)
 	return svc
 }
 
