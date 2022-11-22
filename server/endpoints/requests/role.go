@@ -5,13 +5,15 @@ import (
 
 	"github.com/bagasunix/traveltours/pkg/errors"
 	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/gofrs/uuid"
 )
 
 type CreateRole struct {
-	Name     string `json:"name"`
-	Group    string `json:"group"`
-	Desc     string `json:"desc"`
-	IsActive int8   `json:"is_active"`
+	Name          string      `json:"name"`
+	Group         string      `json:"group"`
+	Desc          string      `json:"desc"`
+	PermissionIds []uuid.UUID `json:"permissionIds,omitempty"`
+	IsActive      int8        `json:"is_active"`
 }
 
 func (s *CreateRole) Validate() error {
@@ -32,10 +34,11 @@ func (s *CreateRole) ToJSON() []byte {
 
 // CreateRoleBuilder Builder Object for CreateRole
 type CreateRoleBuilder struct {
-	name     string
-	group    string
-	desc     string
-	isActive int8
+	name          string
+	group         string
+	desc          string
+	permissionIds []uuid.UUID
+	isActive      int8
 }
 
 // NewCreateRoleBuilder Constructor for CreateRoleBuilder
@@ -50,6 +53,7 @@ func (b *CreateRoleBuilder) Build() *CreateRole {
 	o.Name = b.name
 	o.Group = b.group
 	o.Desc = b.desc
+	o.PermissionIds = b.permissionIds
 	o.IsActive = b.isActive
 	return o
 }
@@ -73,6 +77,11 @@ func (c *CreateRoleBuilder) SetDesc(desc string) {
 // Setter method for the field isActive of type int8 in the object CreateRoleBuilder
 func (c *CreateRoleBuilder) SetIsActive(isActive int8) {
 	c.isActive = isActive
+}
+
+// Setter method for the field permissionIds of type []uuid.UUID in the object CreateRoleBuilder
+func (c *CreateRoleBuilder) SetPermissionIds(permissionIds []uuid.UUID) {
+	c.permissionIds = permissionIds
 }
 
 type UpdateRole struct {
