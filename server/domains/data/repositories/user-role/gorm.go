@@ -16,6 +16,11 @@ type gormProvider struct {
 	db     *gorm.DB
 }
 
+// CreateTx implements Repository
+func (g *gormProvider) CreateTx(ctx context.Context, tx any, m *models.Role) error {
+	return errors.ErrDuplicateValue(g.logger, g.GetModelName(), tx.(*gorm.DB).WithContext(ctx).Create(m).Error)
+}
+
 // GetByGroup implements Repository
 func (g *gormProvider) GetByGroup(ctx context.Context, group string) (result models.SliceResult[models.Role]) {
 	result.Error = errors.ErrRecordNotFound(g.logger, g.GetModelName(), g.db.WithContext(ctx).Where("group = ?", group).Find(&result.Value).Error)

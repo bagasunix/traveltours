@@ -10,6 +10,7 @@ import (
 
 type Commond interface {
 	Create(ctx context.Context, m *models.Role) error
+	CreateTx(ctx context.Context, tx any, m *models.Role) error
 	Update(ctx context.Context, m models.Role) error
 	Delete(ctx context.Context, id uuid.UUID) error
 }
