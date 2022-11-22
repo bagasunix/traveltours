@@ -14,6 +14,7 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/gofrs/uuid"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type RoleWithEndpoint interface {
@@ -73,18 +74,41 @@ func (r *role) CreateRole(ctx context.Context, request *requests.CreateRole) (re
 		return nil, err
 	}
 
-	roleMBuild := models.NewRoleBuilder()
-	roleMBuild.SetId(helpers.GenerateUUIDV1(r.logger))
-	roleMBuild.SetName(request.Name)
-	roleMBuild.SetGroup(request.Group)
+	roleModelBuilder := models.NewRoleBuilder()
+	roleModelBuilder.SetId(helpers.GenerateUUIDV1(r.logger))
+	roleModelBuilder.SetName(request.Name)
+	roleModelBuilder.SetGroup(request.Group)
 
-	if err = r.repo.GetRole().Create(ctx, roleMBuild.Build()); err != nil {
+	roleModel := roleModelBuilder.Build()
+
+	rolePermissionModelBuilder := models.NewRolePermissionBuilder()
+	var rolePermissionModels []models.RolePermission
+	for _, i := range request.PermissionIds {
+		rolePermissionModelBuilder.SetRoleId(roleModel.Id)
+		rolePermissionModelBuilder.SetPermissionId(i)
+		rolePermissionModels = append(rolePermissionModels, *rolePermissionModelBuilder.Build())
+	}
+
+	tx := r.repo.GetRole().GetConnection().(*gorm.DB).Begin()
+
+	if err = r.repo.GetRole().CreateTx(ctx, tx, roleModel); err != nil {
+		tx.Rollback()
 		return nil, err
 	}
 
-	resBuild := responses.NewEntityIdBuilder()
-	resBuild.SetId(roleMBuild.Build())
-	return resBuild.Build(), nil
+	if err = r.repo.GetRolePermission().CreateTxBatch(ctx, tx, rolePermissionModels); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	if err = errors.ErrSomethingWrong(r.logger, tx.Commit().Error); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	responseEntityIdBuilder := responses.NewEntityIdBuilder()
+	responseEntityIdBuilder.SetId(roleModel)
+	return responseEntityIdBuilder.Build(), nil
 }
 
 // DeleteRole implements Role
