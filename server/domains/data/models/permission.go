@@ -2,11 +2,11 @@ package models
 
 type Permission struct {
 	BaseModel
-	Name   string `gorm:"size:200"`
+	Name   string `gorm:"uniqueIndex;size:200"`
 	Slug   string
-	Method string   `gorm:"uniqueIndex:permission_unique_index"`
-	Url    []string `gorm:"uniqueIndex:permission_unique_index"`
-	Roles  []Role   `gorm:"many2many:role_permissions;"`
+	Method string `gorm:"uniqueIndex:permission_unique_index"`
+	Url    string `gorm:"uniqueIndex:permission_unique_index"`
+	Roles  []Role `gorm:"many2many:role_permissions;"`
 }
 
 // Builder Object for Permission
@@ -15,7 +15,7 @@ type PermissionBuilder struct {
 	name   string
 	slug   string
 	method string
-	url    []string
+	url    string
 }
 
 // Constructor for PermissionBuilder
@@ -35,13 +35,13 @@ func (b *PermissionBuilder) Build() *Permission {
 	return o
 }
 
-// Setter method for the field method of type []string in the object PermissionBuilder
+// Setter method for the field method of type string in the object PermissionBuilder
 func (p *PermissionBuilder) SetMethod(method string) {
 	p.method = method
 }
 
-// Setter method for the field url of type []string in the object PermissionBuilder
-func (p *PermissionBuilder) SetUrl(url []string) {
+// Setter method for the field url of type string in the object PermissionBuilder
+func (p *PermissionBuilder) SetUrl(url string) {
 	p.url = url
 }
 
