@@ -5,7 +5,7 @@ type GroupMenu struct {
 	Name     string `gorm:"size:50"`
 	Desc     string `gorm:"size:100"`
 	Position int8
-	IsActive int8 `gorm:"size:1"`
+	IsActive string `gorm:"size:1"`
 }
 
 // Builder Object for GroupMenu
@@ -14,7 +14,7 @@ type GroupMenuBuilder struct {
 	name     string
 	desc     string
 	position int8
-	isActive int8
+	isActive string
 }
 
 // Constructor for GroupMenuBuilder
@@ -45,7 +45,7 @@ func (g *GroupMenuBuilder) SetDesc(desc string) {
 }
 
 // Setter method for the field isActive of type int8 in the object GroupMenuBuilder
-func (g *GroupMenuBuilder) SetIsActive(isActive int8) {
+func (g *GroupMenuBuilder) SetIsActive(isActive string) {
 	g.isActive = isActive
 }
 

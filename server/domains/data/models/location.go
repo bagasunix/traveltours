@@ -1,7 +1,11 @@
 package models
 
+import "github.com/gofrs/uuid"
+
 type LocationTour struct {
 	BaseModel
+	TourId    uuid.UUID
+	Tour      *Tour `gorm:"foreignKey:TourId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
 	VillageId *int64
 	Village   *Village `gorm:"foreignKey:VillageId"`
 	Coordinate
@@ -13,6 +17,8 @@ type LocationTour struct {
 // Builder Object for LocationTour
 type LocationTourBuilder struct {
 	BaseModelBuilder
+	tourId    uuid.UUID
+	tour      *Tour
 	villageId *int64
 	village   *Village
 	CoordinateBuilder
@@ -31,6 +37,8 @@ func NewLocationTourBuilder() *LocationTourBuilder {
 func (b *LocationTourBuilder) Build() *LocationTour {
 	o := new(LocationTour)
 	o.BaseModel = *b.BaseModelBuilder.Build()
+	o.TourId = b.tourId
+	o.Tour = b.tour
 	o.VillageId = b.villageId
 	o.Village = b.village
 	o.Coordinate = *b.CoordinateBuilder.Build()
@@ -63,4 +71,14 @@ func (l *LocationTourBuilder) SetDescription(description string) {
 // Setter method for the field day of type int in the object LocationTourBuilder
 func (l *LocationTourBuilder) SetDay(day int) {
 	l.day = day
+}
+
+// Setter method for the field tourId of type uuid.UUID in the object LocationTourBuilder
+func (l *LocationTourBuilder) SetTourId(tourId uuid.UUID) {
+	l.tourId = tourId
+}
+
+// Setter method for the field tour of type *Tour in the object LocationTourBuilder
+func (l *LocationTourBuilder) SetTour(tour *Tour) {
+	l.tour = tour
 }

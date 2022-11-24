@@ -12,9 +12,7 @@ func PermissionModelToEntity(model *models.Permission) *entities.Permission {
 	builder := entities.NewPermissionBuilder()
 	builder.SetName(model.Name)
 	builder.SetMethod(model.Method)
-	for _, v := range model.Url {
-		builder.SetUrl(v)
-	}
+	builder.SetMethod(model.Method)
 	builder.SetCreatedBy(model.CreatedBy)
 	builder.SetCreatedAt(model.CreatedAt)
 	return builder.Build()

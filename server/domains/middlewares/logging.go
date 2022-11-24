@@ -16,6 +16,46 @@ type loggingMiddleware struct {
 	next   domains.Service
 }
 
+// CreateUser implements domains.Service
+func (*loggingMiddleware) CreateUser(ctx context.Context, request *requests.CreateUser) (response *responses.EntityId, err error) {
+	panic("unimplemented")
+}
+
+// DeleteUser implements domains.Service
+func (*loggingMiddleware) DeleteUser(ctx context.Context, request *requests.EntityId) (response *responses.Empty, err error) {
+	panic("unimplemented")
+}
+
+// DisableAccount implements domains.Service
+func (*loggingMiddleware) DisableAccount(ctx context.Context, req *requests.DisableAccount) (res *responses.Empty, err error) {
+	panic("unimplemented")
+}
+
+// ListUser implements domains.Service
+func (*loggingMiddleware) ListUser(ctx context.Context, request *requests.BaseList) (response *responses.ListEntity[entities.User], err error) {
+	panic("unimplemented")
+}
+
+// ViewUser implements domains.Service
+func (*loggingMiddleware) ViewUser(ctx context.Context, request *requests.EntityId) (response *responses.ViewEntity[*entities.User], err error) {
+	panic("unimplemented")
+}
+
+// ListUserByLimit implements domains.Service
+func (*loggingMiddleware) ListUserByLimit(ctx context.Context, limit int64) (users []entities.User, err error) {
+	panic("unimplemented")
+}
+
+// ViewUserByEmail implements domains.Service
+func (*loggingMiddleware) ViewUserByEmail(ctx context.Context, emailOrMsisdn string) (user *entities.User, err error) {
+	panic("unimplemented")
+}
+
+// ViewUserById implements domains.Service
+func (*loggingMiddleware) ViewUserById(ctx context.Context, id uuid.UUID) (user *entities.User, err error) {
+	panic("unimplemented")
+}
+
 // AssignPermissionsToRole implements domains.Service
 func (*loggingMiddleware) AssignPermissionsToRole(ctx context.Context, request *requests.AssignPermissionsToRole) (response *responses.Empty, err error) {
 	panic("unimplemented")

@@ -4,12 +4,12 @@ import "github.com/gofrs/uuid"
 
 type User struct {
 	BaseModel
+	UserID   uuid.UUID
 	Email    string `gorm:"size:100;uniqueIndex:idx_user_unique"`
 	Password string
-
-	RoleId uuid.UUID `gorm:"not null;"`
-	Role   *Role     `gorm:"foreignKey:RoleId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
-	Status string    `gorm:"size:20;not null;index:, type:hash"`
+	RoleId   uuid.UUID `gorm:"not null;"`
+	Role     *Role     `gorm:"foreignKey:RoleId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
+	Status   string    `gorm:"size:20;not null;index:, type:hash"`
 }
 
 // UserBuilder Builder Object for User

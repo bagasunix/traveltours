@@ -3,9 +3,6 @@ package usecases
 import (
 	"context"
 
-	"github.com/bagasunix/traveltours/pkg/errors"
-	"github.com/bagasunix/traveltours/pkg/helpers"
-	"github.com/bagasunix/traveltours/server/domains/data/models"
 	"github.com/bagasunix/traveltours/server/domains/data/repositories"
 	"github.com/bagasunix/traveltours/server/domains/entities"
 	"github.com/bagasunix/traveltours/server/endpoints/requests"
@@ -40,28 +37,30 @@ type user struct {
 
 // CreateUser implements User
 func (u *user) CreateUser(ctx context.Context, request *requests.CreateUser) (response *responses.EntityId, err error) {
-	resBuilder := responses.NewEntityIdBuilder()
+	// resBuilder := responses.NewEntityIdBuilder()
 
-	if err = request.Validate(); err != nil {
-		return resBuilder.Build(), err
-	}
+	// if err = request.Validate(); err != nil {
+	// 	return resBuilder.Build(), err
+	// }
 
-	if helpers.IsEmailValid(request.Email) != true {
-		return nil, errors.ErrValidEmail(u.logger, request.Email)
-	}
+	// if helpers.IsEmailValid(request.Email) != true {
+	// 	return nil, errors.ErrValidEmail(u.logger, request.Email)
+	// }
 
-	mUser := models.NewUserBuilder()
-	mUser.SetId(helpers.GenerateUUIDV1(u.logger))
-	mUser.SetEmail(request.Email)
-	mUser.SetPassword(helpers.HashAndSalt([]byte(request.Password)))
-	mUser.SetRoleId(request.RoleId)
-	mUser.SetIsActive("0")
+	// mUser := models.NewUserBuilder()
+	// mUser.SetId(helpers.GenerateUUIDV1(u.logger))
+	// mUser.SetEmail(request.Email)
+	// mUser.SetPassword(helpers.HashAndSalt([]byte(request.Password)))
+	// mUser.SetRoleId(request.RoleId)
+	// mUser.SetIsActive("0")
 
-	if err = u.repo.GetUser().Create(ctx, mUser.Build()); err != nil {
-		return resBuilder.Build(), err
-	}
+	// if err = u.repo.GetUser().Create(ctx, mUser.Build()); err != nil {
+	// 	return resBuilder.Build(), err
+	// }
 
-	return resBuilder.SetId(mUser.Build().Id).Build(), nil
+	// return resBuilder.SetId(mUser.Build().Id).Build(), nil
+	return nil, nil
+
 }
 
 // DeleteUser implements User
@@ -99,7 +98,7 @@ func (u *user) ViewUserById(ctx context.Context, id uuid.UUID) (user *entities.U
 	panic("unimplemented")
 }
 
-func NewAccount(logger *zap.Logger, repo repositories.Repositories) User {
+func NewUser(logger *zap.Logger, repo repositories.Repositories) User {
 	a := new(user)
 	a.logger = logger
 	a.repo = repo

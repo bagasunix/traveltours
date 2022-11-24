@@ -9,11 +9,13 @@ import (
 type Service interface {
 	usecases.Role
 	usecases.Permission
+	usecases.User
 }
 
 type service struct {
 	usecases.Role
 	usecases.Permission
+	usecases.User
 }
 
 type ServiceBuild struct {
@@ -33,6 +35,7 @@ func buildService(logger *zap.Logger, repo repositories.Repositories) Service {
 	svc := new(service)
 	svc.Permission = usecases.NewPermission(logger, repo)
 	svc.Role = usecases.NewRole(logger, repo)
+	svc.User = usecases.NewUser(logger, repo)
 	return svc
 }
 
