@@ -4,41 +4,39 @@ import "github.com/gofrs/uuid"
 
 type User struct {
 	BaseModel
-	Email      string `gorm:"size:100;uniqueIndex:idx_account_unique"`
-	Password   string
-	RoleId     uuid.UUID
-	Role       *Role        `gorm:"foreignKey:RoleId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
-	Permission []Permission `gorm:"many2many:role_permissions;"`
-	IsActive   string       `gorm:"size:1"`
+	Email    string `gorm:"size:100;uniqueIndex:idx_user_unique"`
+	Password string
+
+	RoleId uuid.UUID `gorm:"not null;"`
+	Role   *Role     `gorm:"foreignKey:RoleId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
+	Status string    `gorm:"size:20;not null;index:, type:hash"`
 }
 
-// Builder Object for User
+// UserBuilder Builder Object for User
 type UserBuilder struct {
 	BaseModelBuilder
-	email      string
-	password   string
-	roleId     uuid.UUID
-	role       *Role
-	permission []Permission
-	isActive   string
+	email    string
+	password string
+	roleId   uuid.UUID
+	role     *Role
+	status   string
 }
 
-// Constructor for UserBuilder
+// NewUserBuilder Constructor for UserBuilder
 func NewUserBuilder() *UserBuilder {
 	o := new(UserBuilder)
 	return o
 }
 
 // Build Method which creates User
-func (b *UserBuilder) Build() *User {
+func (u *UserBuilder) Build() *User {
 	o := new(User)
-	o.BaseModel = *b.BaseModelBuilder.Build()
-	o.Email = b.email
-	o.Password = b.password
-	o.RoleId = b.roleId
-	o.Role = b.role
-	o.Permission = b.permission
-	o.IsActive = b.isActive
+	o.BaseModel = *u.BaseModelBuilder.Build()
+	o.Email = u.email
+	o.Password = u.password
+	o.Role = u.role
+	o.RoleId = u.roleId
+	o.Status = u.status
 	return o
 }
 
@@ -62,12 +60,7 @@ func (u *UserBuilder) SetRole(role *Role) {
 	u.role = role
 }
 
-// Setter method for the field permission of type []Permission in the object UserBuilder
-func (u *UserBuilder) SetPermission(permission []Permission) {
-	u.permission = permission
-}
-
-// Setter method for the field isActive of type string in the object UserBuilder
-func (u *UserBuilder) SetIsActive(isActive string) {
-	u.isActive = isActive
+// Setter method for the field status of type string in the object UserBuilder
+func (u *UserBuilder) SetStatus(status string) {
+	u.status = status
 }
