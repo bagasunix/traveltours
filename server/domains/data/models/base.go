@@ -3,7 +3,7 @@ package models
 import "github.com/gofrs/uuid"
 
 type BaseModel struct {
-	Id uuid.UUID `gorm:"primaryKey;type:uuid.UUID;<-:create"`
+	Id uuid.UUID `gorm:"primaryKey;type:uuid;<-:create"`
 	Created
 	Updated
 }
@@ -31,6 +31,7 @@ func (b *BaseModelBuilder) Build() *BaseModel {
 }
 
 // Setter method for the field id of type uuid.UUID in the object BaseModelBuilder
-func (b *BaseModelBuilder) SetId(id uuid.UUID) {
+func (b *BaseModelBuilder) SetId(id uuid.UUID) *BaseModelBuilder {
 	b.id = id
+	return b
 }
