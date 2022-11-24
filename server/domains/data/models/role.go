@@ -2,14 +2,15 @@ package models
 
 type Role struct {
 	BaseModel
-	Name        string       `gorm:"size:50"`
+	Name        string       `gorm:"size:200;uniqueIndex:idx_role_name_unique, sort:asc"`
 	Group       string       `gorm:"size:100;index:role_group"`
 	Permissions []Permission `gorm:"many2many:role_permissions;"`
+	User        *User        `gorm:"foreignKey:RoleId"`
 	Desc        string       `gorm:"size:100"`
 	IsActive    int8         `gorm:"size:1"`
 }
 
-// Builder Object for Role
+// RoleBuilder Builder Object for Role
 type RoleBuilder struct {
 	BaseModelBuilder
 	name        string
@@ -19,35 +20,41 @@ type RoleBuilder struct {
 	isActive    int8
 }
 
-// Constructor for RoleBuilder
+// NewRoleBuilder Constructor for RoleBuilder
 func NewRoleBuilder() *RoleBuilder {
 	o := new(RoleBuilder)
 	return o
 }
 
 // Build Method which creates Role
-func (b *RoleBuilder) Build() *Role {
+func (r *RoleBuilder) Build() *Role {
 	o := new(Role)
-	o.BaseModel = *b.BaseModelBuilder.Build()
-	o.Name = b.name
-	o.Group = b.group
-	o.Permissions = b.permissions
+	o.BaseModel = *r.BaseModelBuilder.Build()
+	o.Name = r.name
+	o.Group = r.group
+	o.Permissions = r.permissions
 	o.Desc = b.desc
 	o.IsActive = b.isActive
 	return o
 }
 
-// Setter method for the field name of type string in the object RoleBuilder
-func (r *RoleBuilder) SetName(name string) {
+// SetName Setter method for the field name of type string in the object RoleBuilder
+func (r *RoleBuilder) SetName(name string) *RoleBuilder {
 	r.name = name
+	return r
 }
 
-// Setter method for the field typeRole of type string in the object RoleBuilder
-func (r *RoleBuilder) SetGroup(group string) {
+// SetGroup Setter method for the field group of type string in the object RoleBuilder
+func (r *RoleBuilder) SetGroup(group string) *RoleBuilder {
 	r.group = group
+	return r
 }
 
-// Setter method for the field desc of type string in the object RoleBuilder
+// SetPermissions Setter method for the field permissions of type []Permission in the object RoleBuilder
+func (r *RoleBuilder) SetPermissions(permissions []Permission) *RoleBuilder {
+	r.permissions = permissions
+	return r
+}
 func (r *RoleBuilder) SetDesc(desc string) {
 	r.desc = desc
 }
@@ -55,10 +62,4 @@ func (r *RoleBuilder) SetDesc(desc string) {
 // Setter method for the field isActive of type int8 in the object RoleBuilder
 func (r *RoleBuilder) SetIsActive(isActive int8) {
 	r.isActive = isActive
-}
-
-
-// Setter method for the field permissions of type []Permission in the object RoleBuilder
-func (r *RoleBuilder) SetPermissions(permissions []Permission) {		
-	r.permissions = permissions
 }
