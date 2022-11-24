@@ -33,8 +33,8 @@ func (r *RoleBuilder) Build() *Role {
 	o.Name = r.name
 	o.Group = r.group
 	o.Permissions = r.permissions
-	o.Desc = b.desc
-	o.IsActive = b.isActive
+	o.Desc = r.desc
+	o.IsActive = r.isActive
 	return o
 }
 
