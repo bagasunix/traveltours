@@ -6,8 +6,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func MakeUserHandler(logger *zap.Logger, eps endpoints.UserEndpoints, rg *gin.RouterGroup) *gin.RouterGroup {
-	rg.POST("", makeCreateUserHandler(logger, eps))
+func MakeUserHandler(logger *zap.Logger, eps endpoints.UserEndpoint, rg *gin.RouterGroup) *gin.RouterGroup {
+	rg.POST("", eps.CreateUser())
 	// rg.POST("", eps.CreateUser())
 	// rg.Use(middlewares.Auth(logs), middlewares.Permission("admin"))
 	// rg.GET("", eps.ListAccount())
@@ -15,8 +15,4 @@ func MakeUserHandler(logger *zap.Logger, eps endpoints.UserEndpoints, rg *gin.Ro
 	// rg.DELETE("/:id", eps.DeleteAccount())
 	// rg.PUT("", eps.DisableAccount())
 	return rg
-}
-
-func makeCreateUserHandler(logger *zap.Logger, eps endpoints.UserEndpoints) gin.HandlerFunc {
-	return nil
 }

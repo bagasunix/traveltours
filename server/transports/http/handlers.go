@@ -16,5 +16,6 @@ func NewHttpHandler(logger *zap.Logger, eps endpoints.Endpoints) *gin.Engine {
 
 	// Create an user group
 	handlers.MakeUserHandler(logger, eps.UserEndpoint, r.Group("/v1/user"))
+	handlers.MakePermissionHandler(logger, eps.PermissionEndpoint, r.Group("/v1/permission"))
 	return r
 }

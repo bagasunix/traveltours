@@ -38,6 +38,7 @@ type CreateUserBuilder struct {
 	email    string
 	password string
 	roleId   uuid.UUID
+	statusId uuid.UUID
 }
 
 // Constructor for CreateUserBuilder
@@ -72,7 +73,7 @@ func (c *CreateUserBuilder) SetRoleId(roleId uuid.UUID) {
 
 type DisableAccount struct {
 	EntityId
-	IsActive int8 `json:"is_active"`
+	StatusId uuid.UUID `json:"status_id"`
 }
 
 func (s *DisableAccount) ToJSON() []byte {
@@ -84,7 +85,7 @@ func (s *DisableAccount) ToJSON() []byte {
 // Builder Object for DisableAccount
 type DisableAccountBuilder struct {
 	EntityIdBuilder
-	isActive int8
+	statusId uuid.UUID
 }
 
 // Constructor for DisableAccountBuilder
@@ -97,11 +98,11 @@ func NewDisableAccountBuilder() *DisableAccountBuilder {
 func (b *DisableAccountBuilder) Build() *DisableAccount {
 	o := new(DisableAccount)
 	o.EntityId = *b.EntityIdBuilder.Build()
-	o.IsActive = b.isActive
+	o.StatusId = b.statusId
 	return o
 }
 
 // Setter method for the field isActive of type int8 in the object DisableAccountBuilder
-func (d *DisableAccountBuilder) SetIsActive(isActive int8) {
-	d.isActive = isActive
+func (d *DisableAccountBuilder) SetIsActive(statusId uuid.UUID) {
+	d.statusId = statusId
 }

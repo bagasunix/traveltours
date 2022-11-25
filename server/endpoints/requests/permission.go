@@ -8,9 +8,9 @@ import (
 )
 
 type CreatePermission struct {
-	Name   string   `json:"name"`
-	Method string   `json:"method"`
-	Url    []string `json:"url"`
+	Name   string `json:"name"`
+	Method string `json:"method"`
+	Url    string `json:"url"`
 }
 
 func (s *CreatePermission) Validate() error {
@@ -36,7 +36,7 @@ func (s *CreatePermission) ToJSON() []byte {
 type CreatePermissionBuilder struct {
 	name   string
 	method string
-	url    []string
+	url    string
 }
 
 // Constructor for CreatePermissionBuilder
@@ -64,16 +64,16 @@ func (c *CreatePermissionBuilder) SetMethod(method string) {
 	c.method = method
 }
 
-// Setter method for the field url of type []string in the object CreatePermissionBuilder
-func (c *CreatePermissionBuilder) SetUrl(url []string) {
+// Setter method for the field url of type string in the object CreatePermissionBuilder
+func (c *CreatePermissionBuilder) SetUrl(url string) {
 	c.url = url
 }
 
 type UpdatePermission struct {
 	EntityId
-	Name   string   `json:"name"`
-	Method string   `json:"method"`
-	Url    []string `json:"url"`
+	Name   string `json:"name"`
+	Method string `json:"method"`
+	Url    string `json:"url"`
 }
 
 func (s *UpdatePermission) Validate() error {
@@ -99,7 +99,7 @@ func (s *UpdatePermission) ToJSON() []byte {
 type UpdatePermissionBuilder struct {
 	name   string
 	method string
-	url    []string
+	url    string
 }
 
 // Constructor for UpdatePermissionBuilder
@@ -128,7 +128,7 @@ func (u *UpdatePermissionBuilder) SetMethod(method string) {
 }
 
 // Setter method for the field url of type []string in the object UpdatePermissionBuilder
-func (u *UpdatePermissionBuilder) SetUrl(url []string) {
+func (u *UpdatePermissionBuilder) SetUrl(url string) {
 	u.url = url
 }
 
