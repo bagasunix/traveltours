@@ -27,7 +27,7 @@ type Tour struct {
 	SecretTour    int8 `gorm:"size:1"`
 	StartLocation uuid.UUID
 	LocationId    StartLocation  `gorm:"foreignKey:StartLocation;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
-	Location      []LocationTour `gorm:"type:uuid[]"`
+	Location      []TourLocation `gorm:"type:uuid[]"`
 	Guides        []User         `gorm:"type:uuid[]"`
 	// UserId        User           `gorm:"foreignKey:Guides;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
 	IsActive int8 `gorm:"size:1"`
