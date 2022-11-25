@@ -50,12 +50,16 @@ func (u *user) CreateUser(ctx context.Context, request *requests.CreateUser) (re
 		return nil, errors.ErrValidEmail(u.logger, request.Email)
 	}
 
+	if err = u.repo.GetRole().GetById(ctx, request.RoleId).Error; err != nil {
+		return nil, err
+	}
+
 	mUser := models.NewUserBuilder()
 	mUser.SetId(helpers.GenerateUUIDV1(u.logger))
 	mUser.SetEmail(request.Email)
 	mUser.SetPassword(helpers.HashAndSalt([]byte(request.Password)))
 	mUser.SetRoleId(request.RoleId)
-	mUser.SetIsActive("0")
+	mUser.SetStatusId(1)
 
 	if err = u.repo.GetUser().Create(ctx, mUser.Build()); err != nil {
 		return resBuilder.Build(), err
