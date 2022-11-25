@@ -4,12 +4,12 @@ import "github.com/gofrs/uuid"
 
 type User struct {
 	BaseModel
-	UserID   uuid.UUID
 	Email    string `gorm:"size:100;uniqueIndex:idx_user_unique"`
 	Password string
-	RoleId   uuid.UUID `gorm:"not null;"`
-	Role     *Role     `gorm:"foreignKey:RoleId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
-	Status   string    `gorm:"size:20;not null;index:, type:hash"`
+	RoleId   uuid.UUID   `gorm:"not null;"`
+	Role     *Role       `gorm:"foreignKey:RoleId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
+	StatusId int8        `gorm:"not null;"`
+	Status   *UserStatus `gorm:"foreignKey:StatusId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
 }
 
 // UserBuilder Builder Object for User
@@ -19,7 +19,8 @@ type UserBuilder struct {
 	password string
 	roleId   uuid.UUID
 	role     *Role
-	status   string
+	statusId int8
+	status   *UserStatus
 }
 
 // NewUserBuilder Constructor for UserBuilder
@@ -36,6 +37,7 @@ func (u *UserBuilder) Build() *User {
 	o.Password = u.password
 	o.Role = u.role
 	o.RoleId = u.roleId
+	o.StatusId = u.statusId
 	o.Status = u.status
 	return o
 }
@@ -60,7 +62,12 @@ func (u *UserBuilder) SetRole(role *Role) {
 	u.role = role
 }
 
-// Setter method for the field status of type string in the object UserBuilder
-func (u *UserBuilder) SetStatus(status string) {
+// Setter method for the field statusId of type uuid.UUID in the object UserBuilder
+func (u *UserBuilder) SetStatusId(statusId int8) {
+	u.statusId = statusId
+}
+
+// Setter method for the field status of type *UserStatus in the object UserBuilder
+func (u *UserBuilder) SetStatus(status *UserStatus) {
 	u.status = status
 }
