@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/bagasunix/traveltours/pkg/errors"
+	"github.com/bagasunix/traveltours/pkg/helpers"
+	"github.com/bagasunix/traveltours/server/domains/data/models"
 	"github.com/bagasunix/traveltours/server/domains/data/repositories"
 	"github.com/bagasunix/traveltours/server/domains/entities"
 	"github.com/bagasunix/traveltours/server/domains/entities/mappers"
@@ -12,6 +14,7 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/gofrs/uuid"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type RoleWithEndpoint interface {
@@ -39,20 +42,18 @@ type role struct {
 
 // AssignPermissionsToRole implements Role
 func (r *role) AssignPermissionsToRole(ctx context.Context, request *requests.AssignPermissionsToRole) (response *responses.Empty, err error) {
-	// rolePermissionModelBuilder := models.NewRolePermissionBuilder()
-	// var rolePermissionModels []models.RolePermission
-	// for _, v := range request.PermissionIds {
-	// 	rolePermissionModelBuilder.SetRoleId(request.RoleId.(uuid.UUID))
-	// 	rolePermissionModelBuilder.SetPermissionId(v.(uuid.UUID))
-	// 	rolePermissionModels = append(rolePermissionModels, *rolePermissionModelBuilder.Build())
-	// }
+	rolePermissionModelBuilder := models.NewRolePermissionBuilder()
+	var rolePermissionModels []models.RolePermission
+	for _, v := range request.PermissionIds {
+		rolePermissionModelBuilder.SetRoleId(request.RoleId.(uuid.UUID))
+		rolePermissionModelBuilder.SetPermissionId(v.(uuid.UUID))
+		rolePermissionModels = append(rolePermissionModels, *rolePermissionModelBuilder.Build())
+	}
 
-	// if err = r.repo.GetRolePermission().CreateBatch(ctx, rolePermissionModels); err != nil {
-	// 	return nil, err
-	// }
-	// return new(responses.Empty), nil
-	return nil, nil
-
+	if err = r.repo.GetRolePermission().CreateBatch(ctx, rolePermissionModels); err != nil {
+		return nil, err
+	}
+	return new(responses.Empty), nil
 }
 
 // RemovePermissionsFromRole implements Role
@@ -69,47 +70,45 @@ func (r *role) RemovePermissionsFromRole(ctx context.Context, request *requests.
 
 // CreateRole implements Role
 func (r *role) CreateRole(ctx context.Context, request *requests.CreateRole) (response *responses.EntityId, err error) {
-	// if err = request.Validate(); err != nil {
-	// 	return nil, err
-	// }
+	if err = request.Validate(); err != nil {
+		return nil, err
+	}
 
-	// roleModelBuilder := models.NewRoleBuilder()
-	// roleModelBuilder.SetId(helpers.GenerateUUIDV1(r.logger))
-	// roleModelBuilder.SetName(request.Name)
-	// roleModelBuilder.SetGroup(request.Group)
+	roleModelBuilder := models.NewRoleBuilder()
+	roleModelBuilder.SetId(helpers.GenerateUUIDV1(r.logger))
+	roleModelBuilder.SetName(request.Name)
+	roleModelBuilder.SetGroup(request.Group)
 
-	// roleModel := roleModelBuilder.Build()
+	roleModel := roleModelBuilder.Build()
 
-	// rolePermissionModelBuilder := models.NewRolePermissionBuilder()
-	// var rolePermissionModels []models.RolePermission
-	// for _, i := range request.PermissionIds {
-	// 	rolePermissionModelBuilder.SetRoleId(roleModel.Id)
-	// 	rolePermissionModelBuilder.SetPermissionId(i)
-	// 	rolePermissionModels = append(rolePermissionModels, *rolePermissionModelBuilder.Build())
-	// }
+	rolePermissionModelBuilder := models.NewRolePermissionBuilder()
+	var rolePermissionModels []models.RolePermission
+	for _, i := range request.PermissionIds {
+		rolePermissionModelBuilder.SetRoleId(roleModel.Id)
+		rolePermissionModelBuilder.SetPermissionId(i)
+		rolePermissionModels = append(rolePermissionModels, *rolePermissionModelBuilder.Build())
+	}
 
-	// tx := r.repo.GetRole().GetConnection().(*gorm.DB).Begin()
+	tx := r.repo.GetRole().GetConnection().(*gorm.DB).Begin()
 
-	// if err = r.repo.GetRole().CreateTx(ctx, tx, roleModel); err != nil {
-	// 	tx.Rollback()
-	// 	return nil, err
-	// }
+	if err = r.repo.GetRole().CreateTx(ctx, tx, roleModel); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
 
-	// if err = r.repo.GetRolePermission().CreateTxBatch(ctx, tx, rolePermissionModels); err != nil {
-	// 	tx.Rollback()
-	// 	return nil, err
-	// }
+	if err = r.repo.GetRolePermission().CreateTxBatch(ctx, tx, rolePermissionModels); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
 
-	// if err = errors.ErrSomethingWrong(r.logger, tx.Commit().Error); err != nil {
-	// 	tx.Rollback()
-	// 	return nil, err
-	// }
+	if err = errors.ErrSomethingWrong(r.logger, tx.Commit().Error); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
 
-	// responseEntityIdBuilder := responses.NewEntityIdBuilder()
-	// responseEntityIdBuilder.SetId(roleModel)
-	// return responseEntityIdBuilder.Build(), nil
-	return nil, nil
-
+	responseEntityIdBuilder := responses.NewEntityIdBuilder()
+	responseEntityIdBuilder.SetId(roleModel)
+	return responseEntityIdBuilder.Build(), nil
 }
 
 // DeleteRole implements Role
@@ -138,20 +137,18 @@ func (r *role) ListRole(ctx context.Context, request *requests.BaseList) (respon
 
 // UpdateRole implements Role
 func (r *role) UpdateRole(ctx context.Context, request *requests.UpdateRole) (response *responses.Empty, err error) {
-	// if err = request.Validate(); err != nil {
-	// 	return nil, err
-	// }
+	if err = request.Validate(); err != nil {
+		return nil, err
+	}
 
-	// mRole := models.NewRoleBuilder()
-	// mRole.SetId(request.Id.(uuid.UUID))
-	// mRole.SetName(request.Name)
-	// mRole.SetGroup(request.Group)
-	// mRole.SetDesc(request.Desc)
-	// mRole.SetIsActive(request.IsActive)
+	mRole := models.NewRoleBuilder()
+	mRole.SetId(request.Id.(uuid.UUID))
+	mRole.SetName(request.Name)
+	mRole.SetGroup(request.Group)
+	mRole.SetDesc(request.Desc)
+	mRole.SetIsActive(request.IsActive)
 
-	// return new(responses.Empty), r.repo.GetRole().Update(ctx, *mRole.Build())
-	return nil, nil
-
+	return new(responses.Empty), r.repo.GetRole().Update(ctx, *mRole.Build())
 }
 
 // ViewRoleById implements Role
