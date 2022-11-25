@@ -5,11 +5,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Endpoint func(ctx *gin.Context, request interface{}) (res interface{}, err error)
+type Endpoint func(ctx *gin.Context) (res interface{}, err error)
 type Middleware func(Endpoint) Endpoint
 
 type Endpoints struct {
-	UserEndpoint UserEndpoints
+	UserEndpoint       UserEndpoint
+	PermissionEndpoint PermissionEndpoint
 }
 
 // Builder Object for Endpoints
@@ -27,7 +28,8 @@ func NewEndpointsBuilder() *EndpointsBuilder {
 // Build Method which creates Endpoints
 func (b *EndpointsBuilder) Build() Endpoints {
 	o := new(Endpoints)
-	o.UserEndpoint = NewUserEndpoint(b.service, b.mdw)
+	o.UserEndpoint = NewUserEndpoint(b.service)
+	o.PermissionEndpoint = NewPermissionEndpoint(b.service)
 	return *o
 }
 
