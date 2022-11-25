@@ -23,12 +23,13 @@ func GetTables() (tables []interface{}) {
 	tables = append(tables, models.NewUserSexBuilder().Build())
 	tables = append(tables, models.NewUserBuilder().Build())
 	tables = append(tables, models.NewUserDetailsBuilder().Build())
+	tables = append(tables, models.NewUserStatusBuilder().Build())
 
 	tables = append(tables, models.NewImageBuilder().Build())
 	tables = append(tables, models.NewTourBuilder().Build())
 	tables = append(tables, models.NewTourDifficultyBuilder().Build())
 	tables = append(tables, models.NewTourReviewBuilder().Build())
-	tables = append(tables, models.NewLocationTourBuilder().Build())
+	tables = append(tables, models.NewTourLocationBuilder().Build())
 
 	tables = append(tables, models.NewGroupMenuBuilder().Build())
 	tables = append(tables, models.NewMenuBuilder().Build())
