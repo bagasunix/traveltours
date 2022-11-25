@@ -1,19 +1,15 @@
 package models
 
-import "github.com/gofrs/uuid"
-
 type UserStatus struct {
-	Id     uuid.UUID `gorm:"primaryKey;type:uuid;<-create"`
-	UserId uuid.UUID `gorm:"not null"`
-	Name   string    `gorm:"size:20;index:idx_user_status_name,options:CONCURRENTLY;<-create"`
+	Id   int8   `gorm:"primaryKey;<-create"`
+	Name string `gorm:"size:20;index:idx_user_status_name,options:CONCURRENTLY;<-create"`
 	Created
 }
 
 // UserStatusBuilder Builder Object for UserStatus
 type UserStatusBuilder struct {
-	id     uuid.UUID
-	userId uuid.UUID
-	name   string
+	id   int8
+	name string
 	CreatedBuilder
 }
 
@@ -27,14 +23,13 @@ func NewUserStatusBuilder() *UserStatusBuilder {
 func (u *UserStatusBuilder) Build() *UserStatus {
 	o := new(UserStatus)
 	o.Id = u.id
-	o.UserId = u.userId
 	o.Name = u.name
 	o.Created = *u.CreatedBuilder.Build()
 	return o
 }
 
 // SetId Setter method for the field id of type uuid.UUID in the object UserStatusBuilder
-func (u *UserStatusBuilder) SetId(id uuid.UUID) *UserStatusBuilder {
+func (u *UserStatusBuilder) SetId(id int8) *UserStatusBuilder {
 	u.id = id
 	return u
 }
@@ -42,11 +37,5 @@ func (u *UserStatusBuilder) SetId(id uuid.UUID) *UserStatusBuilder {
 // SetName Setter method for the field name of type string in the object UserStatusBuilder
 func (u *UserStatusBuilder) SetName(name string) *UserStatusBuilder {
 	u.name = name
-	return u
-}
-
-// SetUserId Setter method for the field userId of type uuid.UUID in the object UserStatusBuilder
-func (u *UserStatusBuilder) SetUserId(userId uuid.UUID) *UserStatusBuilder {
-	u.userId = userId
 	return u
 }
