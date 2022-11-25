@@ -41,7 +41,7 @@ func (g *gormProvider) GetConnection() (T any) {
 
 // GetModelName implements Repository
 func (g *gormProvider) GetModelName() string {
-	return "User Role"
+	return "Role"
 }
 
 // GetByKeywords implements Repository
