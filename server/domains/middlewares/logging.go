@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"context"
+	"time"
 
 	"github.com/bagasunix/traveltours/server/domains"
 	"github.com/bagasunix/traveltours/server/domains/entities"
@@ -17,8 +18,11 @@ type loggingMiddleware struct {
 }
 
 // CreateUser implements domains.Service
-func (*loggingMiddleware) CreateUser(ctx context.Context, request *requests.CreateUser) (response *responses.EntityId, err error) {
-	panic("unimplemented")
+func (l *loggingMiddleware) CreateUser(ctx context.Context, request *requests.CreateUser) (response *responses.EntityId, err error) {
+	defer func(begin time.Time) {
+		l.logger.Log(zap.InfoLevel, "Middleware Domain", zap.String("method", "CreateUser"), zap.Any("request", string(request.ToJSON())), zap.Any("response", string(response.ToJSON())), zap.Any("err", err), zap.Any("took", time.Since(begin)))
+	}(time.Now())
+	return l.next.CreateUser(ctx, request)
 }
 
 // DeleteUser implements domains.Service
@@ -92,8 +96,11 @@ func (*loggingMiddleware) ViewRoleById(ctx context.Context, id uuid.UUID) (respo
 }
 
 // CreatePermission implements domains.Service
-func (*loggingMiddleware) CreatePermission(ctx context.Context, request *requests.CreatePermission) (response *responses.EntityId, err error) {
-	panic("unimplemented")
+func (l *loggingMiddleware) CreatePermission(ctx context.Context, request *requests.CreatePermission) (response *responses.EntityId, err error) {
+	defer func(begin time.Time) {
+		l.logger.Log(zap.InfoLevel, "Middleware Domain", zap.String("method", "CreatePermission"), zap.Any("request", string(request.ToJSON())), zap.Any("response", string(response.ToJSON())), zap.Any("err", err), zap.Any("took", time.Since(begin)))
+	}(time.Now())
+	return l.next.CreatePermission(ctx, request)
 }
 
 // DeletePermission implements domains.Service
