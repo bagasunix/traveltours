@@ -16,6 +16,7 @@ type PermissionBuilder struct {
 	slug   string
 	method string
 	url    string
+	roles  []Role
 }
 
 // Constructor for PermissionBuilder
@@ -32,6 +33,7 @@ func (b *PermissionBuilder) Build() *Permission {
 	o.Slug = b.slug
 	o.Method = b.method
 	o.Url = b.url
+	o.Roles = b.roles
 	return o
 }
 
@@ -53,4 +55,9 @@ func (p *PermissionBuilder) SetName(name string) {
 // Setter method for the field slug of type string in the object PermissionBuilder
 func (p *PermissionBuilder) SetSlug(slug string) {
 	p.slug = slug
+}
+
+// Setter method for the field roles of type []Role in the object PermissionBuilder
+func (p *PermissionBuilder) SetRoles(roles []Role) {
+	p.roles = roles
 }
