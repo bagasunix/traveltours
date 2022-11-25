@@ -11,10 +11,82 @@ import (
 
 type PermissionEndpoint interface {
 	CreatePermession() gin.HandlerFunc
+	UpdatePermission() gin.HandlerFunc
+	DeletePermission() gin.HandlerFunc
+	ListPermission() gin.HandlerFunc
+	ViewPermission() gin.HandlerFunc
 }
 
 type permissionHandler struct {
 	service domains.Service
+}
+
+// DeletePermission implements PermissionEndpoint
+func (p *permissionHandler) DeletePermission() gin.HandlerFunc {
+	return func(g *gin.Context) {
+		req, err := decodeByEntityIdEndpoint(g)
+		if err != nil {
+			utils.EncodeError(g, err, g.Writer)
+			return
+		}
+		dataRole, err := p.service.DeleteRole(g, req.(*requests.EntityId))
+		if err != nil {
+			utils.EncodeError(g, err, g.Writer)
+			return
+		}
+		g.JSON(http.StatusNoContent, dataRole)
+	}
+}
+
+// ListPermission implements PermissionEndpoint
+func (p *permissionHandler) ListPermission() gin.HandlerFunc {
+	return func(g *gin.Context) {
+		req, err := decodeBaseListEndpoint(g)
+		if err != nil {
+			utils.EncodeError(g, err, g.Writer)
+			return
+		}
+		dataRole, err := p.service.ListRole(g, req.(*requests.BaseList))
+		if err != nil {
+			utils.EncodeError(g, err, g.Writer)
+			return
+		}
+		g.JSON(http.StatusOK, dataRole)
+	}
+}
+
+// UpdatePermission implements PermissionEndpoint
+func (p *permissionHandler) UpdatePermission() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req requests.UpdatePermission
+		if err := ctx.Bind(&req); err != nil {
+			utils.EncodeError(ctx, err, ctx.Writer)
+			return
+		}
+		dataRole, err := p.service.UpdatePermission(ctx, &req)
+		if err != nil {
+			utils.EncodeError(ctx, err, ctx.Writer)
+			return
+		}
+		ctx.JSON(http.StatusCreated, dataRole)
+	}
+}
+
+// ViewPermission implements PermissionEndpoint
+func (p *permissionHandler) ViewPermission() gin.HandlerFunc {
+	return func(g *gin.Context) {
+		req, err := decodeByEntityIdEndpoint(g)
+		if err != nil {
+			utils.EncodeError(g, err, g.Writer)
+			return
+		}
+		dataRole, err := p.service.ViewPermission(g, req.(*requests.EntityId))
+		if err != nil {
+			utils.EncodeError(g, err, g.Writer)
+			return
+		}
+		g.JSON(http.StatusOK, dataRole)
+	}
 }
 
 // CreatePermession implements PermissionEndpoint

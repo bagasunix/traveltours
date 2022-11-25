@@ -96,17 +96,15 @@ func (p *permission) UpdatePermission(ctx context.Context, request *requests.Upd
 
 // ViewPermission implements Permission
 func (p *permission) ViewPermission(ctx context.Context, request *requests.EntityId) (response *responses.ViewEntity[*entities.Permission], err error) {
-	// if err = request.Validate(); err != nil {
-	// 	return nil, err
-	// }
+	if err = request.Validate(); err != nil {
+		return nil, err
+	}
 
-	// result := p.repo.GetPermission().GetById(ctx, request.Id.(uuid.UUID))
+	result := p.repo.GetPermission().GetById(ctx, request.Id.(uuid.UUID))
 
-	// responseBuilder := responses.NewViewEntityBuilder[*entities.Permission]()
-	// responseBuilder.SetData(mappers.PermissionModelToEntity(result.Value))
-	// return responseBuilder.Build(), result.Error
-	return nil, nil
-
+	responseBuilder := responses.NewViewEntityBuilder[*entities.Permission]()
+	responseBuilder.SetData(mappers.PermissionModelToEntity(result.Value))
+	return responseBuilder.Build(), result.Error
 }
 
 func NewPermission(logger *zap.Logger, repo repositories.Repositories) Permission {

@@ -8,5 +8,8 @@ import (
 
 func MakePermissionHandler(logger *zap.Logger, eps endpoints.PermissionEndpoint, rg *gin.RouterGroup) *gin.RouterGroup {
 	rg.POST("", eps.CreatePermession())
+	rg.PUT("", eps.UpdatePermission())
+	rg.GET("", eps.ListPermission())
+	rg.DELETE("/:id", eps.DeletePermission())
 	return rg
 }
