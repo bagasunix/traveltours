@@ -1,7 +1,6 @@
 package endpoints
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/bagasunix/traveltours/server/domains"
@@ -62,7 +61,7 @@ func (p *permissionHandler) UpdatePermission() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var req requests.UpdatePermission
 
-		if err := json.NewDecoder(ctx.Request.Body).Decode(&req); err != nil {
+		if err := ctx.Bind(&req); err != nil {
 			utils.EncodeError(ctx, err, ctx.Writer)
 			return
 		}
