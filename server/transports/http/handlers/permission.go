@@ -10,6 +10,7 @@ func MakePermissionHandler(logger *zap.Logger, eps endpoints.PermissionEndpoint,
 	rg.POST("", eps.CreatePermession())
 	rg.PUT("", eps.UpdatePermission())
 	rg.GET("", eps.ListPermission())
+	rg.GET("/:id", eps.ViewPermission())
 	rg.DELETE("/:id", eps.DeletePermission())
 	return rg
 }

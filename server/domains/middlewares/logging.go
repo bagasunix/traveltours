@@ -76,8 +76,11 @@ func (*loggingMiddleware) DeleteRole(ctx context.Context, request *requests.Enti
 }
 
 // ListRole implements domains.Service
-func (*loggingMiddleware) ListRole(ctx context.Context, request *requests.BaseList) (response *responses.ListEntity[entities.Role], err error) {
-	panic("unimplemented")
+func (l *loggingMiddleware) ListRole(ctx context.Context, request *requests.BaseList) (response *responses.ListEntity[entities.Role], err error) {
+	defer func(begin time.Time) {
+		l.logger.Log(zap.InfoLevel, "Middleware Domain", zap.String("method", "ListRole"), zap.Any("request", string(request.ToJSON())), zap.Any("response", string(response.ToJSON())), zap.Any("err", err), zap.Any("took", time.Since(begin)))
+	}(time.Now())
+	return l.next.ListRole(ctx, request)
 }
 
 // RemovePermissionsFromRole implements domains.Service
@@ -104,23 +107,35 @@ func (l *loggingMiddleware) CreatePermission(ctx context.Context, request *reque
 }
 
 // DeletePermission implements domains.Service
-func (*loggingMiddleware) DeletePermission(ctx context.Context, request *requests.EntityId) (response *responses.Empty, err error) {
-	panic("unimplemented")
+func (l *loggingMiddleware) DeletePermission(ctx context.Context, request *requests.EntityId) (response *responses.Empty, err error) {
+	defer func(begin time.Time) {
+		l.logger.Log(zap.InfoLevel, "Middleware Domain", zap.String("method", "DeletePermission"), zap.Any("request", string(request.ToJSON())), zap.Any("response", string(response.ToJSON())), zap.Any("err", err), zap.Any("took", time.Since(begin)))
+	}(time.Now())
+	return l.next.DeletePermission(ctx, request)
 }
 
 // ListPermission implements domains.Service
-func (*loggingMiddleware) ListPermission(ctx context.Context, request *requests.BaseList) (response *responses.ListEntity[entities.Permission], err error) {
-	panic("unimplemented")
+func (l *loggingMiddleware) ListPermission(ctx context.Context, request *requests.BaseList) (response *responses.ListEntity[entities.Permission], err error) {
+	defer func(begin time.Time) {
+		l.logger.Log(zap.InfoLevel, "Middleware Domain", zap.String("method", "ListPermission"), zap.Any("request", string(request.ToJSON())), zap.Any("response", string(response.ToJSON())), zap.Any("err", err), zap.Any("took", time.Since(begin)))
+	}(time.Now())
+	return l.next.ListPermission(ctx, request)
 }
 
 // UpdatePermission implements domains.Service
-func (*loggingMiddleware) UpdatePermission(ctx context.Context, request *requests.UpdatePermission) (response *responses.Empty, err error) {
-	panic("unimplemented")
+func (l *loggingMiddleware) UpdatePermission(ctx context.Context, request *requests.UpdatePermission) (response *responses.Empty, err error) {
+	defer func(begin time.Time) {
+		l.logger.Log(zap.InfoLevel, "Middleware Domain", zap.String("method", "UpdatePermission"), zap.Any("request", string(request.ToJSON())), zap.Any("response", string(response.ToJSON())), zap.Any("err", err), zap.Any("took", time.Since(begin)))
+	}(time.Now())
+	return l.next.UpdatePermission(ctx, request)
 }
 
 // ViewPermission implements domains.Service
-func (*loggingMiddleware) ViewPermission(ctx context.Context, request *requests.EntityId) (response *responses.ViewEntity[*entities.Permission], err error) {
-	panic("unimplemented")
+func (l *loggingMiddleware) ViewPermission(ctx context.Context, request *requests.EntityId) (response *responses.ViewEntity[*entities.Permission], err error) {
+	defer func(begin time.Time) {
+		l.logger.Log(zap.InfoLevel, "Middleware Domain", zap.String("method", "ViewPermission"), zap.Any("request", string(request.ToJSON())), zap.Any("response", string(response.ToJSON())), zap.Any("err", err), zap.Any("took", time.Since(begin)))
+	}(time.Now())
+	return l.next.ViewPermission(ctx, request)
 }
 
 func LoggingMiddleware(logger *zap.Logger) domains.Middleware {

@@ -79,11 +79,10 @@ func (p *permission) UpdatePermission(ctx context.Context, request *requests.Upd
 	if err = request.Validate(); err != nil {
 		return nil, err
 	}
-	slugs := slug.Make(request.Name)
 	mBuild := models.NewPermissionBuilder()
 	mBuild.SetId(request.Id.(uuid.UUID))
 	mBuild.SetName(request.Name)
-	mBuild.SetSlug(slugs)
+	mBuild.SetSlug(slug.Make(request.Name))
 	mBuild.SetUrl(request.Url)
 	mBuild.SetMethod(request.Method)
 	model := mBuild.Build()

@@ -77,14 +77,8 @@ type UpdatePermission struct {
 }
 
 func (s *UpdatePermission) Validate() error {
-	if validation.IsEmpty(s.Name) {
-		return errors.ErrInvalidAttributes("permission name")
-	}
-	if validation.IsEmpty(s.Method) {
-		return errors.ErrInvalidAttributes("permission method")
-	}
-	if validation.IsEmpty(s.Url) {
-		return errors.ErrInvalidAttributes("permission url")
+	if validation.IsEmpty(s.Id) {
+		return errors.ErrInvalidAttributes("permission id")
 	}
 	return nil
 }

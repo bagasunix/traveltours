@@ -1,12 +1,14 @@
 package endpoints
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/bagasunix/traveltours/server/domains"
 	"github.com/bagasunix/traveltours/server/endpoints/requests"
 	"github.com/bagasunix/traveltours/server/endpoints/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/gofrs/uuid"
 )
 
 type PermissionEndpoint interface {
@@ -29,7 +31,7 @@ func (p *permissionHandler) DeletePermission() gin.HandlerFunc {
 			utils.EncodeError(g, err, g.Writer)
 			return
 		}
-		dataRole, err := p.service.DeleteRole(g, req.(*requests.EntityId))
+		dataRole, err := p.service.DeletePermission(g, req.(*requests.EntityId))
 		if err != nil {
 			utils.EncodeError(g, err, g.Writer)
 			return
@@ -46,7 +48,7 @@ func (p *permissionHandler) ListPermission() gin.HandlerFunc {
 			utils.EncodeError(g, err, g.Writer)
 			return
 		}
-		dataRole, err := p.service.ListRole(g, req.(*requests.BaseList))
+		dataRole, err := p.service.ListPermission(g, req.(*requests.BaseList))
 		if err != nil {
 			utils.EncodeError(g, err, g.Writer)
 			return
@@ -59,16 +61,18 @@ func (p *permissionHandler) ListPermission() gin.HandlerFunc {
 func (p *permissionHandler) UpdatePermission() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var req requests.UpdatePermission
-		if err := ctx.Bind(&req); err != nil {
+
+		if err := json.NewDecoder(ctx.Request.Body).Decode(&req); err != nil {
 			utils.EncodeError(ctx, err, ctx.Writer)
 			return
 		}
+		req.Id = uuid.FromStringOrNil(req.Id.(string))
 		dataRole, err := p.service.UpdatePermission(ctx, &req)
 		if err != nil {
 			utils.EncodeError(ctx, err, ctx.Writer)
 			return
 		}
-		ctx.JSON(http.StatusCreated, dataRole)
+		ctx.JSON(http.StatusOK, dataRole)
 	}
 }
 
