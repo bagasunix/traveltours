@@ -8,11 +8,11 @@ import (
 
 func MakeRoleHandler(logger *zap.Logger, eps endpoints.RoleEndpoint, rg *gin.RouterGroup) *gin.RouterGroup {
 	rg.POST("", eps.CreateRole())
+	rg.PUT("", eps.UpdateRole())
 	// rg.POST("", eps.CreateUser())
 	// rg.Use(middlewares.Auth(logs), middlewares.Permission("admin"))
 	// rg.GET("", eps.ListAccount())
 	// rg.GET("/:id", eps.ViewAccount())
 	// rg.DELETE("/:id", eps.DeleteAccount())
-	// rg.PUT("", eps.DisableAccount())
 	return rg
 }
