@@ -66,7 +66,7 @@ func (*loggingMiddleware) AssignPermissionsToRole(ctx context.Context, request *
 }
 
 // CreateRole implements domains.Service
-func (l*loggingMiddleware) CreateRole(ctx context.Context, request *requests.CreateRole) (response *responses.EntityId, err error) {
+func (l *loggingMiddleware) CreateRole(ctx context.Context, request *requests.CreateRole) (response *responses.EntityId, err error) {
 	defer func(begin time.Time) {
 		l.logger.Log(zap.InfoLevel, "Middleware Domain", zap.String("method", "CreateRole"), zap.Any("request", string(request.ToJSON())), zap.Any("response", string(response.ToJSON())), zap.Any("err", err), zap.Any("took", time.Since(begin)))
 	}(time.Now())
@@ -92,8 +92,11 @@ func (*loggingMiddleware) RemovePermissionsFromRole(ctx context.Context, request
 }
 
 // UpdateRole implements domains.Service
-func (*loggingMiddleware) UpdateRole(ctx context.Context, request *requests.UpdateRole) (response *responses.Empty, err error) {
-	panic("unimplemented")
+func (l *loggingMiddleware) UpdateRole(ctx context.Context, request *requests.UpdateRole) (response *responses.Empty, err error) {
+	defer func(begin time.Time) {
+		l.logger.Log(zap.InfoLevel, "Middleware Domain", zap.String("method", "UpdateRole"), zap.Any("request", string(request.ToJSON())), zap.Any("response", string(response.ToJSON())), zap.Any("err", err), zap.Any("took", time.Since(begin)))
+	}(time.Now())
+	return l.next.UpdateRole(ctx, request)
 }
 
 // ViewRoleById implements domains.Service
