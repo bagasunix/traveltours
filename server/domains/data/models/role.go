@@ -7,7 +7,7 @@ type Role struct {
 	Permissions []Permission `gorm:"many2many:role_permissions;"`
 	User        *User        `gorm:"foreignKey:RoleId"`
 	Desc        string       `gorm:"size:100"`
-	IsActive    int8         `gorm:"size:1"`
+	IsActive    string       `gorm:"size:1"`
 }
 
 // RoleBuilder Builder Object for Role
@@ -17,7 +17,7 @@ type RoleBuilder struct {
 	group       string
 	permissions []Permission
 	desc        string
-	isActive    int8
+	isActive    string
 }
 
 // NewRoleBuilder Constructor for RoleBuilder
@@ -59,7 +59,7 @@ func (r *RoleBuilder) SetDesc(desc string) {
 	r.desc = desc
 }
 
-// Setter method for the field isActive of type int8 in the object RoleBuilder
-func (r *RoleBuilder) SetIsActive(isActive int8) {
+// Setter method for the field isActive of type string in the object RoleBuilder
+func (r *RoleBuilder) SetIsActive(isActive string) {
 	r.isActive = isActive
 }

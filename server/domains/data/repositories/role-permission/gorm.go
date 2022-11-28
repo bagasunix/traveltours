@@ -28,7 +28,7 @@ func (g *gormProvider) CreateBatch(ctx context.Context, models []models.RolePerm
 
 // CreateTx implements Repository
 func (g *gormProvider) CreateTx(ctx context.Context, tx any, model *models.RolePermission) error {
-	return errors.ErrDuplicateValue(g.logger, g.GetModelName(), tx.(*gorm.DB).WithContext(ctx).Create(tx).Error)
+	return errors.ErrDuplicateValue(g.logger, g.GetModelName(), tx.(*gorm.DB).WithContext(ctx).Create(model).Error)
 }
 
 // CreateTxBatch implements Repository

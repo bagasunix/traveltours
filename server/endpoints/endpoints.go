@@ -11,6 +11,7 @@ type Middleware func(Endpoint) Endpoint
 type Endpoints struct {
 	UserEndpoint       UserEndpoint
 	PermissionEndpoint PermissionEndpoint
+	RoleEndpoint       RoleEndpoint
 }
 
 // Builder Object for Endpoints
@@ -30,6 +31,7 @@ func (b *EndpointsBuilder) Build() Endpoints {
 	o := new(Endpoints)
 	o.UserEndpoint = NewUserEndpoint(b.service)
 	o.PermissionEndpoint = NewPermissionEndpoint(b.service)
+	o.RoleEndpoint = NewRoleEndpoint(b.service)
 	return *o
 }
 

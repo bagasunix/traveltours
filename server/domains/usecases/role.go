@@ -78,6 +78,7 @@ func (r *role) CreateRole(ctx context.Context, request *requests.CreateRole) (re
 	roleModelBuilder.SetId(helpers.GenerateUUIDV1(r.logger))
 	roleModelBuilder.SetName(request.Name)
 	roleModelBuilder.SetGroup(request.Group)
+	roleModelBuilder.SetIsActive("1")
 
 	roleModel := roleModelBuilder.Build()
 

@@ -13,7 +13,7 @@ type CreateRole struct {
 	Group         string      `json:"group"`
 	Desc          string      `json:"desc"`
 	PermissionIds []uuid.UUID `json:"permissionIds,omitempty"`
-	IsActive      int8        `json:"is_active"`
+	IsActive      string      `json:"is_active"`
 }
 
 func (s *CreateRole) Validate() error {
@@ -38,7 +38,7 @@ type CreateRoleBuilder struct {
 	group         string
 	desc          string
 	permissionIds []uuid.UUID
-	isActive      int8
+	isActive      string
 }
 
 // NewCreateRoleBuilder Constructor for CreateRoleBuilder
@@ -74,8 +74,8 @@ func (c *CreateRoleBuilder) SetDesc(desc string) {
 	c.desc = desc
 }
 
-// Setter method for the field isActive of type int8 in the object CreateRoleBuilder
-func (c *CreateRoleBuilder) SetIsActive(isActive int8) {
+// Setter method for the field isActive of type string in the object CreateRoleBuilder
+func (c *CreateRoleBuilder) SetIsActive(isActive string) {
 	c.isActive = isActive
 }
 
@@ -89,7 +89,7 @@ type UpdateRole struct {
 	Name     string `json:"name"`
 	Group    string `json:"group"`
 	Desc     string `json:"desc"`
-	IsActive int8   `json:"is_active"`
+	IsActive string `json:"is_active"`
 }
 
 func (s *UpdateRole) Validate() error {
@@ -114,7 +114,7 @@ type UpdateRoleBuilder struct {
 	name     string
 	group    string
 	desc     string
-	isActive int8
+	isActive string
 }
 
 // NewUpdateRoleBuilder Constructor for UpdateRoleBuilder
@@ -156,8 +156,8 @@ func (u *UpdateRoleBuilder) SetDesc(desc string) {
 	u.desc = desc
 }
 
-// Setter method for the field isActive of type int8 in the object UpdateRoleBuilder
-func (u *UpdateRoleBuilder) SetIsActive(isActive int8) {
+// Setter method for the field isActive of type string in the object UpdateRoleBuilder
+func (u *UpdateRoleBuilder) SetIsActive(isActive string) {
 	u.isActive = isActive
 }
 

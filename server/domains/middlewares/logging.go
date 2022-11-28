@@ -66,8 +66,11 @@ func (*loggingMiddleware) AssignPermissionsToRole(ctx context.Context, request *
 }
 
 // CreateRole implements domains.Service
-func (*loggingMiddleware) CreateRole(ctx context.Context, request *requests.CreateRole) (response *responses.EntityId, err error) {
-	panic("unimplemented")
+func (l*loggingMiddleware) CreateRole(ctx context.Context, request *requests.CreateRole) (response *responses.EntityId, err error) {
+	defer func(begin time.Time) {
+		l.logger.Log(zap.InfoLevel, "Middleware Domain", zap.String("method", "CreateRole"), zap.Any("request", string(request.ToJSON())), zap.Any("response", string(response.ToJSON())), zap.Any("err", err), zap.Any("took", time.Since(begin)))
+	}(time.Now())
+	return l.next.CreateRole(ctx, request)
 }
 
 // DeleteRole implements domains.Service
