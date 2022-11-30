@@ -11,6 +11,7 @@ func RoleModelToEntity(model *models.Role) *entities.Role {
 		return nil
 	}
 	builder := entities.NewRoleBuilder()
+	builder.SetId(model.Id)
 	builder.SetName(model.Name)
 	builder.SetGroup(model.Group)
 	builder.SetCreatedAt(model.CreatedAt)
