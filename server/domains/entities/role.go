@@ -5,7 +5,7 @@ type Role struct {
 	Name        string       `json:"name"`
 	Permissions []Permission `json:"permissions"`
 	Group       string       `json:"group"`
-	IsEnable    bool         `json:"isEnable"`
+	IsActive    string       `json:"is_active"`
 }
 
 // RoleBuilder Builder Object for Role
@@ -14,7 +14,7 @@ type RoleBuilder struct {
 	name        string
 	permissions []Permission
 	group       string
-	isEnable    bool
+	isActive    string
 }
 
 // NewRoleBuilder Constructor for RoleBuilder
@@ -30,7 +30,7 @@ func (b *RoleBuilder) Build() *Role {
 	o.Name = b.name
 	o.Permissions = b.permissions
 	o.Group = b.group
-	o.IsEnable = b.isEnable
+	o.IsActive = b.isActive
 	return o
 }
 
@@ -52,8 +52,8 @@ func (b *RoleBuilder) SetGroup(group string) *RoleBuilder {
 	return b
 }
 
-// SetIsEnable Setter method for the field isEnable of type bool in the object RoleBuilder
-func (b *RoleBuilder) SetIsEnable(isEnable bool) *RoleBuilder {
-	b.isEnable = isEnable
+// SetIsEnable Setter method for the field isEnable of type string in the object RoleBuilder
+func (b *RoleBuilder) SetIsActive(isActive string) *RoleBuilder {
+	b.isActive = isActive
 	return b
 }
