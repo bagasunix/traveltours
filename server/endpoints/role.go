@@ -13,10 +13,28 @@ import (
 type RoleEndpoint interface {
 	CreateRole() gin.HandlerFunc
 	UpdateRole() gin.HandlerFunc
+	GetAllRole() gin.HandlerFunc
 }
 
 type roleHandler struct {
 	service domains.Service
+}
+
+// GetAllRole implements RoleEndpoint
+func (r *roleHandler) GetAllRole() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req requests.BaseList
+		if err := ctx.Bind(&req); err != nil {
+			utils.EncodeError(ctx, err, ctx.Writer)
+			return
+		}
+		dataRole, err := r.service.ListRole(ctx, &req)
+		if err != nil {
+			utils.EncodeError(ctx, err, ctx.Writer)
+			return
+		}
+		ctx.JSON(http.StatusOK, dataRole)
+	}
 }
 
 // UpdateRole implements RoleEndpoint
@@ -33,7 +51,7 @@ func (r *roleHandler) UpdateRole() gin.HandlerFunc {
 			utils.EncodeError(ctx, err, ctx.Writer)
 			return
 		}
-		ctx.JSON(http.StatusCreated, dataRole)
+		ctx.JSON(http.StatusOK, dataRole)
 	}
 }
 
