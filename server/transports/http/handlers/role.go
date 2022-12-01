@@ -10,9 +10,9 @@ func MakeRoleHandler(logger *zap.Logger, eps endpoints.RoleEndpoint, rg *gin.Rou
 	rg.POST("", eps.CreateRole())
 	rg.PUT("", eps.UpdateRole())
 	rg.GET("", eps.GetAllRole())
+	rg.DELETE("/:id", eps.DeleteRole())
 	// rg.Use(middlewares.Auth(logs), middlewares.Permission("admin"))
 	// rg.GET("", eps.ListAccount())
 	// rg.GET("/:id", eps.ViewAccount())
-	// rg.DELETE("/:id", eps.DeleteAccount())
 	return rg
 }

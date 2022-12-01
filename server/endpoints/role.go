@@ -14,10 +14,28 @@ type RoleEndpoint interface {
 	CreateRole() gin.HandlerFunc
 	UpdateRole() gin.HandlerFunc
 	GetAllRole() gin.HandlerFunc
+	DeleteRole() gin.HandlerFunc
 }
 
 type roleHandler struct {
 	service domains.Service
+}
+
+// DeleteRole implements RoleEndpoint
+func (r *roleHandler) DeleteRole() gin.HandlerFunc {
+	return func(g *gin.Context) {
+		req, err := decodeByEntityIdEndpoint(g)
+		if err != nil {
+			utils.EncodeError(g, err, g.Writer)
+			return
+		}
+		dataRole, err := r.service.DeleteRole(g, req.(*requests.EntityId))
+		if err != nil {
+			utils.EncodeError(g, err, g.Writer)
+			return
+		}
+		g.JSON(http.StatusNoContent, dataRole)
+	}
 }
 
 // GetAllRole implements RoleEndpoint
