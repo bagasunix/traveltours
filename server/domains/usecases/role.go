@@ -22,12 +22,13 @@ type RoleWithEndpoint interface {
 	UpdateRole(ctx context.Context, request *requests.UpdateRole) (response *responses.Empty, err error)
 	DeleteRole(ctx context.Context, request *requests.EntityId) (response *responses.Empty, err error)
 	ListRole(ctx context.Context, request *requests.BaseList) (response *responses.ListEntity[entities.Role], err error)
+	ViewRole(ctx context.Context, request *requests.EntityId) (response *responses.ViewEntity[*entities.Role], err error)
 	AssignPermissionsToRole(ctx context.Context, request *requests.AssignPermissionsToRole) (response *responses.Empty, err error)
 	RemovePermissionsFromRole(ctx context.Context, request *requests.RemovePermissionsFromRole) (response *responses.Empty, err error)
 }
 
 type RoleWithNoEndpoint interface {
-	ViewRoleById(ctx context.Context, id uuid.UUID) (response *responses.ViewEntity[*entities.Role], err error)
+	ViewRoleById(ctx context.Context, id uuid.UUID) (role *entities.Role, err error)
 }
 
 type Role interface {
@@ -38,6 +39,19 @@ type Role interface {
 type role struct {
 	repo   repositories.Repositories
 	logger *zap.Logger
+}
+
+// ViewRole implements Role
+func (r *role) ViewRole(ctx context.Context, request *requests.EntityId) (response *responses.ViewEntity[*entities.Role], err error) {
+	if err = request.Validate(); err != nil {
+		return nil, err
+	}
+
+	role, err := r.ViewRoleById(ctx, request.Id.(uuid.UUID))
+
+	responseBuilder := responses.NewViewEntityBuilder[*entities.Role]()
+	responseBuilder.SetData(role)
+	return responseBuilder.Build(), err
 }
 
 // AssignPermissionsToRole implements Role
@@ -117,6 +131,9 @@ func (r *role) DeleteRole(ctx context.Context, request *requests.EntityId) (resp
 	if err := request.Validate(); err != nil {
 		return nil, err
 	}
+	if err := r.repo.GetRole().GetById(ctx, request.Id.(uuid.UUID)).Error; err != nil {
+		return nil, err
+	}
 	return new(responses.Empty), r.repo.GetRole().Delete(ctx, request.Id.(uuid.UUID))
 }
 
@@ -153,7 +170,7 @@ func (r *role) UpdateRole(ctx context.Context, request *requests.UpdateRole) (re
 }
 
 // ViewRoleById implements Role
-func (r *role) ViewRoleById(ctx context.Context, id uuid.UUID) (response *responses.ViewEntity[*entities.Role], err error) {
+func (r *role) ViewRoleById(ctx context.Context, id uuid.UUID) (role *entities.Role, err error) {
 	if validation.IsEmpty(id) {
 		return nil, errors.ErrInvalidAttributes("role id")
 	}
@@ -163,8 +180,26 @@ func (r *role) ViewRoleById(ctx context.Context, id uuid.UUID) (response *respon
 		return nil, roleResult.Error
 	}
 
-	resBuilder := responses.NewViewEntityBuilder[*entities.Role]()
-	return resBuilder.SetData(mappers.RoleModelToEntity(roleResult.Value)).Build(), nil
+	rolePermissionResult := r.repo.GetRolePermission().GetByRoleId(ctx, id)
+	if rolePermissionResult.Error != nil {
+		return nil, rolePermissionResult.Error
+	}
+
+	var ids []uuid.UUID
+	for _, i := range rolePermissionResult.Value {
+		ids = append(ids, i.PermissionId)
+	}
+
+	permissionResult := r.repo.GetPermission().GetBySelectedId(ctx, ids)
+	if permissionResult.Error != nil {
+		return nil, permissionResult.Error
+	}
+
+	permissions := mappers.ListPermissionModelToListEntity(permissionResult.Value)
+	role = mappers.RoleModelToEntity(roleResult.Value)
+	role.Permissions = permissions
+
+	return role, nil
 }
 
 func NewRole(logger *zap.Logger, repo repositories.Repositories) Role {
