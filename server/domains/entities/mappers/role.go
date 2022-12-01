@@ -16,6 +16,7 @@ func RoleModelToEntity(model *models.Role) *entities.Role {
 	builder.SetGroup(model.Group)
 	builder.SetCreatedAt(model.CreatedAt)
 	builder.SetCreatedBy(model.CreatedBy)
+	builder.SetIsActive(model.IsActive)
 	return builder.Build()
 }
 
