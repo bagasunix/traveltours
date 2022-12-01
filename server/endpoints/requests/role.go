@@ -162,8 +162,8 @@ func (u *UpdateRoleBuilder) SetIsActive(isActive string) {
 }
 
 type RemovePermissionsFromRole struct {
-	RoleId        any   `json:"roleId"`
-	PermissionIds []any `json:"permissionId"`
+	RoleId        any   `json:"role_id"`
+	PermissionIds []any `json:"permission_id"`
 }
 
 func (s *RemovePermissionsFromRole) Validate() error {

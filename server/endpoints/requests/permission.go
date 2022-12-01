@@ -127,8 +127,8 @@ func (u *UpdatePermissionBuilder) SetUrl(url string) {
 }
 
 type AssignPermissionsToRole struct {
-	RoleId        any   `json:"roleId"`
-	PermissionIds []any `json:"permissionIds"`
+	RoleId        any   `json:"role_id"`
+	PermissionIds []any `json:"permission_ids"`
 }
 
 func (a *AssignPermissionsToRole) ToJSON() []byte {
