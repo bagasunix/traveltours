@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/bagasunix/traveltours/server/domains"
@@ -15,10 +16,66 @@ type RoleEndpoint interface {
 	UpdateRole() gin.HandlerFunc
 	GetAllRole() gin.HandlerFunc
 	DeleteRole() gin.HandlerFunc
+	ViewRole() gin.HandlerFunc
+	AssignPermissionsToRole() gin.HandlerFunc
+	RemovePermissionsFromRole() gin.HandlerFunc
 }
 
 type roleHandler struct {
 	service domains.Service
+}
+
+// AssignPermissionsToRole implements RoleEndpoint
+func (r *roleHandler) AssignPermissionsToRole() gin.HandlerFunc {
+	return func(g *gin.Context) {
+		req, err := utils.DecodeAssignPermissionsToRoleEndpoint(g)
+		if err != nil {
+			utils.EncodeError(g, err, g.Writer)
+			return
+		}
+		dataRole, err := r.service.AssignPermissionsToRole(g, req.(*requests.AssignPermissionsToRole))
+		if err != nil {
+			utils.EncodeError(g, err, g.Writer)
+			return
+		}
+		fmt.Println(dataRole)
+		g.JSON(http.StatusOK, dataRole)
+	}
+}
+
+// RemovePermissionsFromRole implements RoleEndpoint
+func (r *roleHandler) RemovePermissionsFromRole() gin.HandlerFunc {
+	return func(g *gin.Context) {
+		req, err := utils.DecodeRemovePermissionsFromRoleEndpoint(g)
+		if err != nil {
+			utils.EncodeError(g, err, g.Writer)
+			return
+		}
+		dataRole, err := r.service.RemovePermissionsFromRole(g, req.(*requests.RemovePermissionsFromRole))
+		if err != nil {
+			utils.EncodeError(g, err, g.Writer)
+			return
+		}
+		g.JSON(http.StatusOK, dataRole)
+	}
+}
+
+// ViewRole implements RoleEndpoint
+func (r *roleHandler) ViewRole() gin.HandlerFunc {
+	return func(g *gin.Context) {
+		req, err := decodeByEntityIdEndpoint(g)
+		if err != nil {
+			utils.EncodeError(g, err, g.Writer)
+			return
+		}
+		dataRole, err := r.service.ViewRole(g, req.(*requests.EntityId))
+		if err != nil {
+			utils.EncodeError(g, err, g.Writer)
+			return
+		}
+		fmt.Println(dataRole)
+		g.JSON(http.StatusOK, dataRole)
+	}
 }
 
 // DeleteRole implements RoleEndpoint
