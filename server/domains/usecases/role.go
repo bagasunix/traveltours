@@ -56,6 +56,9 @@ func (r *role) ViewRole(ctx context.Context, request *requests.EntityId) (respon
 
 // AssignPermissionsToRole implements Role
 func (r *role) AssignPermissionsToRole(ctx context.Context, request *requests.AssignPermissionsToRole) (response *responses.Empty, err error) {
+	if err = request.Validate(); err != nil {
+		return nil, err
+	}
 	rolePermissionModelBuilder := models.NewRolePermissionBuilder()
 	var rolePermissionModels []models.RolePermission
 	for _, v := range request.PermissionIds {
@@ -73,7 +76,12 @@ func (r *role) AssignPermissionsToRole(ctx context.Context, request *requests.As
 // RemovePermissionsFromRole implements Role
 func (r *role) RemovePermissionsFromRole(ctx context.Context, request *requests.RemovePermissionsFromRole) (response *responses.Empty, err error) {
 	var ids []uuid.UUID
+	if err = request.Validate(); err != nil {
+		return nil, err
+	}
+
 	for _, i := range request.PermissionIds {
+		i = uuid.FromStringOrNil(i.(string))
 		ids = append(ids, i.(uuid.UUID))
 	}
 	if err = r.repo.GetRolePermission().DeleteBatch(ctx, request.RoleId.(uuid.UUID), ids); err != nil {
