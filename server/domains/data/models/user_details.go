@@ -8,6 +8,8 @@ import (
 
 type UserDetails struct {
 	BaseModel
+	UserId        uuid.UUID
+	User          *User `gorm:"foreignKey:UserId;constraint:OnUpdate:CASCADE,OnDelete:Restrict"`
 	IdentityNo    string
 	FullName      string
 	SexId         uuid.UUID
