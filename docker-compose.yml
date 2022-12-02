@@ -9,3 +9,25 @@ services:
       - POSTGRES_PASSWORD=Kambing04
       - POSTGRES_USER=bagasunix
       - POSTGRES_DB=traveltour
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${DB_USER} -d ${DB_NAME}'"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+  api:
+    build: .
+    restart: always
+    environment:
+      SERVER_ADDRESS: "0.0.0.0:3000"
+      DB_HOST: "db"
+    ports:
+      - "80:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  tourvolume:
