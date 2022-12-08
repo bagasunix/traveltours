@@ -130,7 +130,7 @@ func (r *role) CreateRole(ctx context.Context, request *requests.CreateRole) (re
 	}
 
 	responseEntityIdBuilder := responses.NewEntityIdBuilder()
-	responseEntityIdBuilder.SetId(roleModel)
+	responseEntityIdBuilder.SetId(roleModel.Id)
 	return responseEntityIdBuilder.Build(), nil
 }
 
