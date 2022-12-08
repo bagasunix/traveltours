@@ -16,6 +16,7 @@ const (
 type UserEndpoint interface {
 	CreateUser() gin.HandlerFunc
 	DeleteUser() gin.HandlerFunc
+	ListUser() gin.HandlerFunc
 }
 
 // type UserEndpoints struct {
@@ -24,6 +25,23 @@ type UserEndpoint interface {
 
 type userHandler struct {
 	service domains.Service
+}
+
+// ListUser implements UserEndpoint
+func (l *userHandler) ListUser() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req requests.BaseList
+		if err := ctx.Bind(&req); err != nil {
+			utils.EncodeError(ctx, err, ctx.Writer)
+			return
+		}
+		dataAccount, err := l.service.ListUser(ctx, &req)
+		if err != nil {
+			utils.EncodeError(ctx, err, ctx.Writer)
+			return
+		}
+		ctx.JSON(http.StatusOK, dataAccount)
+	}
 }
 
 // DeleteUser implements UserEndpoint

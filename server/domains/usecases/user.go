@@ -2,14 +2,18 @@ package usecases
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/bagasunix/traveltours/pkg/errors"
 	"github.com/bagasunix/traveltours/pkg/helpers"
 	"github.com/bagasunix/traveltours/server/domains/data/models"
 	"github.com/bagasunix/traveltours/server/domains/data/repositories"
 	"github.com/bagasunix/traveltours/server/domains/entities"
+	"github.com/bagasunix/traveltours/server/domains/entities/mappers"
 	"github.com/bagasunix/traveltours/server/endpoints/requests"
 	"github.com/bagasunix/traveltours/server/endpoints/responses"
+	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/gofrs/uuid"
 	"go.uber.org/zap"
 )
@@ -87,7 +91,34 @@ func (u *user) DisableAccount(ctx context.Context, req *requests.DisableAccount)
 
 // ListUser implements User
 func (u *user) ListUser(ctx context.Context, request *requests.BaseList) (response *responses.ListEntity[entities.User], err error) {
-	panic("unimplemented")
+	if request.Limit == 0 {
+		request.Limit = 25
+	}
+	resBuild := responses.NewListEntityBuilder[entities.User]()
+	var entitiesUser []entities.User
+	if validation.IsEmpty(request.Keyword) {
+		result := u.repo.GetUser().GetByAll(ctx, request.Limit)
+		for _, v := range result.Value {
+			resRole := u.repo.GetRole().GetById(ctx, v.RoleId)
+			resStatus := u.repo.GetUserStatus().GetById(ctx, v.StatusId)
+			fmt.Println(v.Id)
+
+			newEntitiesUser := entities.NewUserBuilder()
+			newEntitiesUser.SetId(v.Id)
+			newEntitiesUser.SetEmail(v.Email)
+			newEntitiesUser.SetRole(strings.ToLower(resRole.Value.Name))
+			newEntitiesUser.SetStatus(strings.ToLower(resStatus.Value.Name))
+			newEntitiesUser.SetCreatedAt(v.CreatedAt)
+			newEntitiesUser.SetCreatedBy(v.CreatedBy)
+			entitiesUser = append(entitiesUser, *newEntitiesUser.Build())
+
+		}
+		resBuild.SetData(entitiesUser)
+		return resBuild.Build(), result.Error
+	}
+	result := u.repo.GetUser().GetByKeywordEmail(ctx, request.Keyword, request.Limit)
+	resBuild.SetData(mappers.ListUserModelToListEntity(result.Value))
+	return resBuild.Build(), result.Error
 }
 
 // ViewUser implements User

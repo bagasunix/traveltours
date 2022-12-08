@@ -14,6 +14,7 @@ import (
 	userreligi "github.com/bagasunix/traveltours/server/domains/data/repositories/user-religi"
 	userrole "github.com/bagasunix/traveltours/server/domains/data/repositories/user-role"
 	usersex "github.com/bagasunix/traveltours/server/domains/data/repositories/user-sex"
+	userstatus "github.com/bagasunix/traveltours/server/domains/data/repositories/user-status"
 	"github.com/bagasunix/traveltours/server/domains/data/repositories/village"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -34,6 +35,7 @@ type Repositories interface {
 	GetMenu() menu.Repository
 	GetGroupMenu() groupmenu.Repository
 	GetSubMenu() submenu.Repository
+	GetUserStatus() userstatus.Repository
 }
 
 type repo struct {
@@ -51,6 +53,12 @@ type repo struct {
 	menu           menu.Repository
 	groupmenu      groupmenu.Repository
 	submenu        submenu.Repository
+	userstatus     userstatus.Repository
+}
+
+// GetUserStatus implements Repositories
+func (r *repo) GetUserStatus() userstatus.Repository {
+	return r.userstatus
 }
 
 // GetGroupMenu implements Repositories
@@ -139,5 +147,6 @@ func New(logger *zap.Logger, db *gorm.DB) Repositories {
 	rp.groupmenu = groupmenu.NewGorm(logger, db)
 	rp.menu = menu.NewGorm(logger, db)
 	rp.submenu = submenu.NewGorm(logger, db)
+	rp.userstatus = userstatus.NewGorm(logger, db)
 	return rp
 }

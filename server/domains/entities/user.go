@@ -2,17 +2,17 @@ package entities
 
 type User struct {
 	Entity
-	Email    string
-	Role     *Role  `json:"role,omitempty"`
-	IsActive string `json:"is_active"`
+	Email  string `json:"email"`
+	Role   string `json:"role,omitempty"`
+	Status string `json:"status"`
 }
 
 // Builder Object for User
 type UserBuilder struct {
 	EntityBuilder
-	email    string
-	role     *Role
-	isActive string
+	email  string
+	role   string
+	status string
 }
 
 // Constructor for UserBuilder
@@ -24,9 +24,10 @@ func NewUserBuilder() *UserBuilder {
 // Build Method which creates User
 func (b *UserBuilder) Build() *User {
 	o := new(User)
+	o.Entity = *b.EntityBuilder.Build()
 	o.Email = b.email
 	o.Role = b.role
-	o.IsActive = b.isActive
+	o.Status = b.status
 	return o
 }
 
@@ -35,12 +36,12 @@ func (u *UserBuilder) SetEmail(email string) {
 	u.email = email
 }
 
-// Setter method for the field role of type *Role in the object UserBuilder
-func (u *UserBuilder) SetRole(role *Role) {
+// Setter method for the field role of type string in the object UserBuilder
+func (u *UserBuilder) SetRole(role string) {
 	u.role = role
 }
 
-// Setter method for the field isActive of type string in the object UserBuilder
-func (u *UserBuilder) SetIsActive(isActive string) {
-	u.isActive = isActive
+// Setter method for the field status of type string in the object UserBuilder
+func (u *UserBuilder) SetStatus(status string) {
+	u.status = status
 }

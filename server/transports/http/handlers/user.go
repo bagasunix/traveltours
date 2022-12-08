@@ -9,9 +9,9 @@ import (
 func MakeUserHandler(logger *zap.Logger, eps endpoints.UserEndpoint, rg *gin.RouterGroup) *gin.RouterGroup {
 	rg.POST("", eps.CreateUser())
 	rg.DELETE("/:id", eps.DeleteUser())
+	rg.GET("", eps.ListUser())
 	// rg.POST("", eps.CreateUser())
 	// rg.Use(middlewares.Auth(logs), middlewares.Permission("admin"))
-	// rg.GET("", eps.ListAccount())
 	// rg.GET("/:id", eps.ViewAccount())
 	// rg.DELETE("/:id", eps.DeleteAccount())
 	// rg.PUT("", eps.DisableAccount())

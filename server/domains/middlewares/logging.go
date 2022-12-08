@@ -55,8 +55,11 @@ func (*loggingMiddleware) DisableAccount(ctx context.Context, req *requests.Disa
 }
 
 // ListUser implements domains.Service
-func (*loggingMiddleware) ListUser(ctx context.Context, request *requests.BaseList) (response *responses.ListEntity[entities.User], err error) {
-	panic("unimplemented")
+func (l *loggingMiddleware) ListUser(ctx context.Context, request *requests.BaseList) (response *responses.ListEntity[entities.User], err error) {
+	defer func(begin time.Time) {
+		l.logger.Log(zap.InfoLevel, "Middleware Domain", zap.String("method", "ListUser"), zap.Any("request", string(request.ToJSON())), zap.Any("response", string(response.ToJSON())), zap.Any("err", err), zap.Any("took", time.Since(begin)))
+	}(time.Now())
+	return l.next.ListUser(ctx, request)
 }
 
 // ViewUser implements domains.Service

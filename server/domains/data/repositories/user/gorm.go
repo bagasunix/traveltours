@@ -26,9 +26,9 @@ func (g *gormProvider) GetModelName() string {
 }
 
 // GetByKeyword implements Repository
-func (g *gormProvider) GetByKeywordEmail(ctx context.Context, entity string) (result models.SliceResult[models.User]) {
+func (g *gormProvider) GetByKeywordEmail(ctx context.Context, entity string, limit int64) (result models.SliceResult[models.User]) {
 	entities := "%" + entity + "%"
-	result.Error = errors.ErrRecordNotFound(g.logger, g.GetModelName(), g.db.WithContext(ctx).Find(&result.Value, "email=?", entities).Error)
+	result.Error = errors.ErrRecordNotFound(g.logger, g.GetModelName(), g.db.WithContext(ctx).Find(&result.Value, "email=?", entities).Limit(int(limit)).Error)
 	return result
 }
 
@@ -53,8 +53,8 @@ func (g *gormProvider) Update(ctx context.Context, m *models.User) error {
 }
 
 // GetByAll implements Repository
-func (g *gormProvider) GetByAll(ctx context.Context) (result models.SliceResult[models.User]) {
-	result.Error = errors.ErrRecordNotFound(g.logger, g.GetModelName(), g.db.WithContext(ctx).Find(&result.Value).Error)
+func (g *gormProvider) GetByAll(ctx context.Context, limit int64) (result models.SliceResult[models.User]) {
+	result.Error = errors.ErrRecordNotFound(g.logger, g.GetModelName(), g.db.WithContext(ctx).Find(&result.Value).Limit(int(limit)).Error)
 	return result
 }
 
