@@ -47,11 +47,11 @@ func (u *user) CreateUser(ctx context.Context, request *requests.CreateUser) (re
 	}
 
 	if helpers.IsEmailValid(request.Email) != true {
-		return nil, errors.ErrValidEmail(u.logger, request.Email)
+		return resBuilder.Build(), errors.ErrValidEmail(u.logger, request.Email)
 	}
 
 	if err = u.repo.GetRole().GetById(ctx, request.RoleId).Error; err != nil {
-		return nil, err
+		return resBuilder.Build(), err
 	}
 
 	mUser := models.NewUserBuilder()
