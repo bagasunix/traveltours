@@ -71,7 +71,13 @@ func (u *user) CreateUser(ctx context.Context, request *requests.CreateUser) (re
 
 // DeleteUser implements User
 func (u *user) DeleteUser(ctx context.Context, request *requests.EntityId) (response *responses.Empty, err error) {
-	panic("unimplemented")
+	if err := request.Validate(); err != nil {
+		return nil, err
+	}
+	if err := u.repo.GetUser().GetById(ctx, request.Id.(uuid.UUID)).Error; err != nil {
+		return nil, err
+	}
+	return new(responses.Empty), u.repo.GetUser().Delete(ctx, request.Id.(uuid.UUID))
 }
 
 // DisableAccount implements User

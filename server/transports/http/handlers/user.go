@@ -8,6 +8,7 @@ import (
 
 func MakeUserHandler(logger *zap.Logger, eps endpoints.UserEndpoint, rg *gin.RouterGroup) *gin.RouterGroup {
 	rg.POST("", eps.CreateUser())
+	rg.DELETE("/:id", eps.DeleteUser())
 	// rg.POST("", eps.CreateUser())
 	// rg.Use(middlewares.Auth(logs), middlewares.Permission("admin"))
 	// rg.GET("", eps.ListAccount())
