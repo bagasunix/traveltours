@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/bagasunix/traveltours/pkg/errors"
 	"github.com/bagasunix/traveltours/pkg/helpers"
@@ -86,7 +87,22 @@ func (u *user) DeleteUser(ctx context.Context, request *requests.EntityId) (resp
 
 // DisableAccount implements User
 func (u *user) DisableAccount(ctx context.Context, req *requests.DisableAccount) (res *responses.Empty, err error) {
-	panic("unimplemented")
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
+	uUid := uuid.FromStringOrNil(req.Id.(string))
+	result := u.repo.GetUser().GetById(ctx, uUid)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if err = u.repo.GetUserStatus().GetById(ctx, req.StatusId).Error; err != nil {
+		return nil, err
+	}
+	mBuild := models.NewUserBuilder()
+	mBuild.SetId(uUid)
+	mBuild.SetStatusId(req.StatusId)
+	mBuild.SetUpdatedAt(time.Now())
+	return new(responses.Empty), u.repo.GetUser().UpdateByStatus(ctx, mBuild.Build())
 }
 
 // ListUser implements User
