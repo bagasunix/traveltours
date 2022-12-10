@@ -14,6 +14,6 @@ func MakeUserHandler(logger *zap.Logger, eps endpoints.UserEndpoint, rg *gin.Rou
 	// rg.Use(middlewares.Auth(logs), middlewares.Permission("admin"))
 	// rg.GET("/:id", eps.ViewAccount())
 	// rg.DELETE("/:id", eps.DeleteAccount())
-	// rg.PUT("", eps.DisableAccount())
+	rg.PUT("", eps.DisableUser())
 	return rg
 }
