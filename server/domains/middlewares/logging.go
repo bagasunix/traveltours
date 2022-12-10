@@ -50,8 +50,11 @@ func (l *loggingMiddleware) DeleteUser(ctx context.Context, request *requests.En
 }
 
 // DisableAccount implements domains.Service
-func (*loggingMiddleware) DisableAccount(ctx context.Context, req *requests.DisableAccount) (res *responses.Empty, err error) {
-	panic("unimplemented")
+func (l *loggingMiddleware) DisableAccount(ctx context.Context, req *requests.DisableAccount) (res *responses.Empty, err error) {
+	defer func(begin time.Time) {
+		l.logger.Log(zap.InfoLevel, "Middleware Domain", zap.String("method", "DisableAccount"), zap.Any("request", string(req.ToJSON())), zap.Any("response", string(res.ToJSON())), zap.Any("err", err), zap.Any("took", time.Since(begin)))
+	}(time.Now())
+	return l.next.DisableAccount(ctx, req)
 }
 
 // ListUser implements domains.Service
