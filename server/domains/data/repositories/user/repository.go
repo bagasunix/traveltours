@@ -18,7 +18,7 @@ type Query interface {
 	GetByAll(ctx context.Context, limit int64) (result models.SliceResult[models.User])
 	GetById(ctx context.Context, id uuid.UUID) (result models.SingleResult[*models.User])
 	GetByKeywordEmail(ctx context.Context, entity string, limit int64) (result models.SliceResult[models.User])
-	UpdateByStatus(ctx context.Context, entity int8) error
+	UpdateByStatus(ctx context.Context, m *models.User) error
 }
 
 type Repository interface {
