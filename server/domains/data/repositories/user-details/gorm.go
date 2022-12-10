@@ -15,6 +15,18 @@ type gormProvider struct {
 	db     *gorm.DB
 }
 
+// DeleteTx implements Repository
+func (g *gormProvider) DeleteTx(ctx context.Context, tx any, id uuid.UUID) error {
+	return errors.ErrSomethingWrong(g.logger, tx.(*gorm.DB).WithContext(ctx).Delete(models.NewUserDetailsBuilder().Build(), "id = ?", id.String()).Error)
+
+}
+
+// GetByUserId implements Repository
+func (g *gormProvider) GetByUserId(ctx context.Context, id uuid.UUID) (result models.SingleResult[*models.UserDetails]) {
+	result.Error = errors.ErrRecordNotFound(g.logger, g.GetModelName(), g.db.WithContext(ctx).First(&result.Value, "user_id=?", id.String()).Error)
+	return result
+}
+
 // GetConnection implements Repository
 func (g *gormProvider) GetConnection() (T any) {
 	return g.db
