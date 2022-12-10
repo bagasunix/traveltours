@@ -33,8 +33,8 @@ func (g *gormProvider) GetByKeywordEmail(ctx context.Context, entity string, lim
 }
 
 // UpdateByStatus implements Repository
-func (g *gormProvider) UpdateByStatus(ctx context.Context, entity int8) error {
-	return errors.ErrSomethingWrong(g.logger, g.db.WithContext(ctx).Update("is_active=?", entity).Error)
+func (g *gormProvider) UpdateByStatus(ctx context.Context, m *models.User) error {
+	return errors.ErrSomethingWrong(g.logger, g.db.WithContext(ctx).Updates(m).Error)
 }
 
 // Create implements Repository
