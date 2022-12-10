@@ -30,3 +30,13 @@ func (b *UpdatedBuilder) Build() *Updated {
 	o.UpdatedAt = b.updatedAt
 	return o
 }
+
+// Setter method for the field updatedBy of type uuid.UUID in the object UpdatedBuilder
+func (u *UpdatedBuilder) SetUpdatedBy(updatedBy uuid.UUID) {
+	u.updatedBy = updatedBy
+}
+
+// Setter method for the field updatedAt of type time.Time in the object UpdatedBuilder
+func (u *UpdatedBuilder) SetUpdatedAt(updatedAt time.Time) {
+	u.updatedAt = updatedAt
+}
