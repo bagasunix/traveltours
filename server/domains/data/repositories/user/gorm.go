@@ -15,6 +15,12 @@ type gormProvider struct {
 	db     *gorm.DB
 }
 
+// DeleteTx implements Repository
+func (g *gormProvider) DeleteTx(ctx context.Context, tx any, id uuid.UUID) error {
+	return errors.ErrSomethingWrong(g.logger, tx.(*gorm.DB).WithContext(ctx).Delete(models.NewUserBuilder().Build(), "id = ?", id.String()).Error)
+
+}
+
 // GetConnection implements Repository
 func (g *gormProvider) GetConnection() (T any) {
 	return g.db

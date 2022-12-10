@@ -12,6 +12,7 @@ type Commond interface {
 	Create(ctx context.Context, m *models.User) error
 	Update(ctx context.Context, m *models.User) error
 	Delete(ctx context.Context, id uuid.UUID) error
+	DeleteTx(ctx context.Context, tx any, id uuid.UUID) error
 }
 
 type Query interface {
