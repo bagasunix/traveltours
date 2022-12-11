@@ -17,6 +17,7 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/gofrs/uuid"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type UserWithEndpoint interface {
@@ -79,10 +80,24 @@ func (u *user) DeleteUser(ctx context.Context, request *requests.EntityId) (resp
 	if err := request.Validate(); err != nil {
 		return nil, err
 	}
-	if err := u.repo.GetUser().GetById(ctx, request.Id.(uuid.UUID)).Error; err != nil {
+	if err = u.repo.GetUserDetail().GetByUserId(ctx, request.Id.(uuid.UUID)).Error; err != nil {
 		return nil, err
 	}
-	return new(responses.Empty), u.repo.GetUser().Delete(ctx, request.Id.(uuid.UUID))
+	if err = u.repo.GetUser().GetById(ctx, request.Id.(uuid.UUID)).Error; err != nil {
+		return nil, err
+	}
+
+	tx := u.repo.GetUser().GetConnection().(*gorm.DB).Begin()
+	if err = u.repo.GetUser().DeleteTx(ctx, tx, request.Id.(uuid.UUID)); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+	if err = u.repo.GetUserDetail().DeleteTx(ctx, tx, request.Id.(uuid.UUID)); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	return new(responses.Empty), errors.ErrSomethingWrong(u.logger, tx.Commit().Error)
 }
 
 // DisableAccount implements User
