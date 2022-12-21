@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"context"
-	"fmt"
 	"strings"
 	"time"
 
@@ -14,6 +13,7 @@ import (
 	"github.com/bagasunix/traveltours/server/domains/entities/mappers"
 	"github.com/bagasunix/traveltours/server/endpoints/requests"
 	"github.com/bagasunix/traveltours/server/endpoints/responses"
+	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/gofrs/uuid"
 	"go.uber.org/zap"
@@ -40,6 +40,7 @@ type User interface {
 }
 
 type user struct {
+	c      *gin.Context
 	repo   repositories.Repositories
 	logger *zap.Logger
 }
@@ -80,11 +81,15 @@ func (u *user) DeleteUser(ctx context.Context, request *requests.EntityId) (resp
 	if err := request.Validate(); err != nil {
 		return nil, err
 	}
-	if err = u.repo.GetUserDetail().GetByUserId(ctx, request.Id.(uuid.UUID)).Error; err != nil {
-		return nil, err
-	}
+
 	if err = u.repo.GetUser().GetById(ctx, request.Id.(uuid.UUID)).Error; err != nil {
 		return nil, err
+	}
+
+	if err = u.repo.GetUserDetail().GetByUserId(ctx, request.Id.(uuid.UUID)).Error; err != nil {
+		if err = u.repo.GetUser().GetById(ctx, request.Id.(uuid.UUID)).Error; err != nil {
+			return nil, err
+		}
 	}
 
 	tx := u.repo.GetUser().GetConnection().(*gorm.DB).Begin()
@@ -132,7 +137,6 @@ func (u *user) ListUser(ctx context.Context, request *requests.BaseList) (respon
 		for _, v := range result.Value {
 			resRole := u.repo.GetRole().GetById(ctx, v.RoleId)
 			resStatus := u.repo.GetUserStatus().GetById(ctx, v.StatusId)
-			fmt.Println(v.Id)
 
 			newEntitiesUser := entities.NewUserBuilder()
 			newEntitiesUser.SetId(v.Id)

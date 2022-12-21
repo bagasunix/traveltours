@@ -75,7 +75,7 @@ func (u *userHandler) DeleteUser() gin.HandlerFunc {
 			utils.EncodeError(g, err, g.Writer)
 			return
 		}
-		g.JSON(http.StatusCreated, dataAccount)
+		g.JSON(http.StatusNoContent, dataAccount)
 	}
 }
 

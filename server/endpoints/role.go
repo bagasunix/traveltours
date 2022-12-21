@@ -1,7 +1,6 @@
 package endpoints
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/bagasunix/traveltours/server/domains"
@@ -38,7 +37,6 @@ func (r *roleHandler) AssignPermissionsToRole() gin.HandlerFunc {
 			utils.EncodeError(g, err, g.Writer)
 			return
 		}
-		fmt.Println(dataRole)
 		g.JSON(http.StatusOK, dataRole)
 	}
 }
@@ -73,7 +71,6 @@ func (r *roleHandler) ViewRole() gin.HandlerFunc {
 			utils.EncodeError(g, err, g.Writer)
 			return
 		}
-		fmt.Println(dataRole)
 		g.JSON(http.StatusOK, dataRole)
 	}
 }
